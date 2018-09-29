@@ -16,15 +16,18 @@ import static java.util.stream.Collectors.toList;
 
 public class Main {
 
-    private static String path = "C:/Users/alenc/Documents/_gitProjects/ENSEPRO/ensepro/main/";
+    private static String path = "C:\\Users\\alenc\\Documents\\_projetos\\ensepro\\codigo\\ensepro\\main\\";
     private static String jsonFile = "resultado_normalizado.json";
-    private static String jsonSaveFile = "gerar_queries_step.json";
+    private static String jsonSaveFile = "queries_renqueadas.json";
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         jsonFile = args.length == 0 ? path + jsonFile : args[0];
         boolean shouldDo3 = false;
-        int size = Integer.valueOf(args[1]);
-        if(args.length > 2) {
+        int size = 100;
+        if (args.length > 1) {
+            size = Integer.valueOf(args[1]);
+        }
+        if (args.length > 2) {
             shouldDo3 = args[1].equalsIgnoreCase("do3");
         }
 
@@ -32,18 +35,16 @@ public class Main {
 
         DoCombinacoes combinacoes = new DoCombinacoes(triplas);
 
-        List<Query> queries = combinacoes.execute(shouldDo3);   
+        List<Query> queries = combinacoes.execute(shouldDo3);
 
         queries.sort(Query::compareTo);
 
         List<Query> listaFinal = queries.stream().limit(size).collect(toList());
 
-        JsonUtil.save("queries_renqueadas.json", JsonFileRanqueado.from(triplas.getHelper(), listaFinal));
+        JsonUtil.save(jsonSaveFile, JsonFileRanqueado.from(triplas.getHelper(), listaFinal));
     }
 
     private static void teste() {
-
-
 
 
     }

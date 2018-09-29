@@ -24,4 +24,6 @@ public class JsonHelper {
     List<List<Object>> termos_relevantes;
     Map<String, List<String>> termos_relacionados;
     Map<String, String> sinonimos;
+    List<String> substantivos_proprios_frase;
+    Map<String, Float> pesos;
 }

@@ -33,6 +33,10 @@ public class JsonFileRanqueado {
             value.add(query.getVarCount());
             value.add(query.getTrCount());
             value.add(query.getEditDistance());
+            value.add(query.getM1());
+            value.add(query.getM2());
+            value.add(query.getM3());
+            value.add(query.getScore());
 
             jsonFile.value(value);
         });

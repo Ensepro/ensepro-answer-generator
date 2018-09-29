@@ -7,7 +7,9 @@ import com.ensepro.query.generator.classes.Triplas;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class DoCombinacoes {
+
+    private static final int THREADS = 20;
 
     private final List<Callable<List<Query>>> callables;
     private final CalcularMetricas metricas;
@@ -25,7 +29,7 @@ public class DoCombinacoes {
         this.metricas = CalcularMetricas.builder().helper(triplas.getHelper()).build();
         this.triplas = triplas.getTriplas();
         this.callables = Collections.synchronizedList(new ArrayList<>());
-        this.executor = Executors.newFixedThreadPool(20);
+        this.executor = Executors.newFixedThreadPool(THREADS);
     }
 
     public List<Query> execute(boolean shouldDo3) throws InterruptedException {
@@ -33,7 +37,7 @@ public class DoCombinacoes {
     }
 
     private List<Query> doCombinacoes(List<Tripla> triplas, boolean shouldDo3) throws InterruptedException {
-        final List<Query> combinacoes = new ArrayList<>();
+        final Set<Query> combinacoes = new HashSet<>();
 
         triplas.forEach(tripla1 -> {
 
@@ -67,7 +71,7 @@ public class DoCombinacoes {
 
         executor.shutdown();
 
-        return combinacoes;
+        return new ArrayList<>(combinacoes);
     }
 
     private List<Query> doCombinacoes(List<Tripla> triplas, Tripla tripla1) {

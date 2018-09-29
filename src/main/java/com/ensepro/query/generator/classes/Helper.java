@@ -25,7 +25,8 @@ public class Helper {
     private final List<TermoRelevante> termos_relevantes;
     Map<String, List<String>> termos_relacionados;
     Map<String, String> sinonimos;
-
+    List<String> substantivos_proprios_frase;
+    Map<String, Float> pesos;
 
     public static Helper fromJsonHelper(JsonHelper jsonHelper) {
         final HelperBuilder helper = Helper.builder();
@@ -34,16 +35,16 @@ public class Helper {
 
         jsonHelper.getMap_resource_to_tr().forEach((key, value) -> {
             map_resource_to_tr.put(key, TermoRelevante.builder()
-                                                      .termo(value.get(0).toString())
-                                                      .peso(Double.valueOf(value.get(1).toString()).intValue())
-                                                      .build());
+                    .termo(value.get(0).toString())
+                    .peso(Double.valueOf(value.get(1).toString()).intValue())
+                    .build());
         });
 
         jsonHelper.getTermos_relevantes().forEach(termo -> {
             helper.termos_relevante(TermoRelevante.builder()
-                                                  .termo(termo.get(0).toString())
-                                                  .peso(Double.valueOf(termo.get(1).toString()).intValue())
-                                                  .build());
+                    .termo(termo.get(0).toString())
+                    .peso(Double.valueOf(termo.get(1).toString()).intValue())
+                    .build());
         });
 
         helper.map_resource_to_var(jsonHelper.getMap_resource_to_var());
@@ -52,6 +53,8 @@ public class Helper {
         helper.map_resource_to_tr(map_resource_to_tr);
         helper.termos_relacionados(jsonHelper.getTermos_relacionados());
         helper.sinonimos(jsonHelper.getSinonimos());
+        helper.substantivos_proprios_frase(jsonHelper.getSubstantivos_proprios_frase());
+        helper.pesos(jsonHelper.getPesos());
 
         return helper.build();
     }
@@ -75,6 +78,8 @@ public class Helper {
         helper.map_resource_to_tr(map_resource_to_tr);
         helper.termos_relacionados(getTermos_relacionados());
         helper.sinonimos(getSinonimos());
+        helper.pesos(getPesos());
+        helper.substantivos_proprios_frase(getSubstantivos_proprios_frase());
 
         return helper.build();
     }
