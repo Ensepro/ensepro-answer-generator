@@ -1,6 +1,7 @@
 package com.ensepro.query.generator.file.json;
 
 
+import com.ensepro.query.generator.classes.Metrica;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,5 +26,5 @@ public class JsonHelper {
     Map<String, List<String>> termos_relacionados;
     Map<String, String> sinonimos;
     List<String> substantivos_proprios_frase;
-    Map<String, Float> pesos;
+    Map<String, Metrica> metricas;
 }

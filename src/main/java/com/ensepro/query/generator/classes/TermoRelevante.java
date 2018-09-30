@@ -11,5 +11,6 @@ public class TermoRelevante {
 
     private final String termo;
     private final Integer peso;
+    private final ClasseGramatical classeGramatical;
 
 }
