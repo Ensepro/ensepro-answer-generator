@@ -105,7 +105,7 @@ public class ScoreCalculation {
 
         AnswerDetails details = AnswerDetails.builder()
                 .elements(elements.intValue())
-                .matches(tr_count.intValue())
+                .matches(keywords.size())
                 .nouns(helper.getProperNouns().size())
                 .nounsMatch(properNouns.intValue())
                 .lentghs(lengths)

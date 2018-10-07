@@ -45,7 +45,7 @@ public class Configuration {
             config.level(Integer.valueOf(args[2]));
         }
 
-        return getDefault();
+        return config.build();
     }
 
 }
