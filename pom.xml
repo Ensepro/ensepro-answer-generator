@@ -32,7 +32,6 @@
             <version>2.9.5</version>
         </dependency>
 
-
     </dependencies>
 
     <build>
@@ -48,7 +47,7 @@
                         <configuration>
                             <classifier>spring-boot</classifier>
                             <mainClass>
-                                com.ensepro.query.generator.main.Main
+                                com.ensepro.query.generator.old.main.Main
                             </mainClass>
                         </configuration>
                     </execution>
