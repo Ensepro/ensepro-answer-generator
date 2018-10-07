@@ -1,4 +1,4 @@
-package com.ensepro.query.generator.data.normalized;
+package com.ensepro.answer.generator.data.normalized;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

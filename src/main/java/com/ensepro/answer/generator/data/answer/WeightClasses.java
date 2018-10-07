@@ -1,6 +1,6 @@
-package com.ensepro.query.generator.data.answer;
+package com.ensepro.answer.generator.data.answer;
 
-import com.ensepro.query.generator.data.RelevantKeyword;
+import com.ensepro.answer.generator.data.RelevantKeyword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

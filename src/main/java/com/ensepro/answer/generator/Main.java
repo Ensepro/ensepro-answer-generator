@@ -1,15 +1,15 @@
-package com.ensepro.query.generator;
+package com.ensepro.answer.generator;
 
-import com.ensepro.query.generator.answer.AnswerGenerator;
-import com.ensepro.query.generator.answer.ScoreCalculation;
-import com.ensepro.query.generator.config.Configuration;
-import com.ensepro.query.generator.data.Helper;
-import com.ensepro.query.generator.data.Triples;
-import com.ensepro.query.generator.data.answer.Answer;
-import com.ensepro.query.generator.data.normalized.NormalizedJson;
-import com.ensepro.query.generator.data.normalized.NormalizedJsonHelper;
-import com.ensepro.query.generator.data.result.JsonAnswers;
-import com.ensepro.query.generator.utils.JsonUtil;
+import com.ensepro.answer.generator.answer.AnswerGenerator;
+import com.ensepro.answer.generator.answer.ScoreCalculation;
+import com.ensepro.answer.generator.config.Configuration;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Triples;
+import com.ensepro.answer.generator.data.answer.Answer;
+import com.ensepro.answer.generator.data.normalized.NormalizedJson;
+import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
+import com.ensepro.answer.generator.data.result.JsonAnswers;
+import com.ensepro.answer.generator.utils.JsonUtil;
 
 import java.io.IOException;
 import java.util.Collections;

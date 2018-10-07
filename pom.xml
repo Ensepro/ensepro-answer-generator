@@ -47,7 +47,7 @@
                         <configuration>
                             <classifier>spring-boot</classifier>
                             <mainClass>
-                                com.ensepro.query.generator.old.main.Main
+                                com.ensepro.answer.generator.Main
                             </mainClass>
                         </configuration>
                     </execution>

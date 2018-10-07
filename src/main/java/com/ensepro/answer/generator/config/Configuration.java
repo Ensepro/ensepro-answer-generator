@@ -1,4 +1,4 @@
-package com.ensepro.query.generator.config;
+package com.ensepro.answer.generator.config;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class Configuration {
 
-    private static final String DEFAULT_LOAD_FILE = "C:\\Users\\alenc\\Documents\\_projetos\\ensepro\\codigo\\ensepro\\main\\resultado_normalizado.json";
+    private static final String DEFAULT_LOAD_FILE = "resultado_normalizado.json";
     private static final String DEFAULT_SAVE_FILE = "queries_renqueadas.json";
     private static final Integer DEFAULT_LEVEL = 2;
     private static final Integer DEFAULT_RESULT_SIZE = 10;
@@ -38,7 +38,7 @@ public class Configuration {
         }
 
         if (args.length > 1) {
-            config.resultSize(Integer.valueOf(args[2]));
+            config.resultSize(Integer.valueOf(args[1]));
         }
 
         if (args.length > 2) {

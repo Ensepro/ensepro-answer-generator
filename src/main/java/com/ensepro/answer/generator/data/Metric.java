@@ -1,6 +1,6 @@
-package com.ensepro.query.generator.data;
+package com.ensepro.answer.generator.data;
 
-import com.ensepro.query.generator.domain.MetricPolicy;
+import com.ensepro.answer.generator.domain.MetricPolicy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

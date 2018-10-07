@@ -1,4 +1,4 @@
-package com.ensepro.query.generator.domain;
+package com.ensepro.answer.generator.domain;
 
 public enum GrammarClass {
 

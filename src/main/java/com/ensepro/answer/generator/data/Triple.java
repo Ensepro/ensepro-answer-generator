@@ -1,4 +1,4 @@
-package com.ensepro.query.generator.data;
+package com.ensepro.answer.generator.data;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

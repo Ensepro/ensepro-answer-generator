@@ -1,9 +1,9 @@
-package com.ensepro.query.generator.answer;
+package com.ensepro.answer.generator.answer;
 
-import com.ensepro.query.generator.data.Helper;
-import com.ensepro.query.generator.data.Triple;
-import com.ensepro.query.generator.data.Triples;
-import com.ensepro.query.generator.data.answer.Answer;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Triple;
+import com.ensepro.answer.generator.data.Triples;
+import com.ensepro.answer.generator.data.answer.Answer;
 import lombok.Builder;
 
 import java.util.ArrayList;

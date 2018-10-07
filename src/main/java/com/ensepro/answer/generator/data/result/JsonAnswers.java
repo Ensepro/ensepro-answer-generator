@@ -1,7 +1,7 @@
-package com.ensepro.query.generator.data.result;
+package com.ensepro.answer.generator.data.result;
 
-import com.ensepro.query.generator.data.answer.Answer;
-import com.ensepro.query.generator.data.normalized.NormalizedJsonHelper;
+import com.ensepro.answer.generator.data.answer.Answer;
+import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.ensepro.query.generator.data;
+package com.ensepro.answer.generator.data;
 
-import com.ensepro.query.generator.domain.GrammarClass;
+import com.ensepro.answer.generator.domain.GrammarClass;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,14 +1,14 @@
-package com.ensepro.query.generator.answer;
+package com.ensepro.answer.generator.answer;
 
-import com.ensepro.query.generator.data.Helper;
-import com.ensepro.query.generator.data.Metric;
-import com.ensepro.query.generator.data.RelevantKeyword;
-import com.ensepro.query.generator.data.Triple;
-import com.ensepro.query.generator.data.answer.Answer;
-import com.ensepro.query.generator.data.answer.AnswerDetails;
-import com.ensepro.query.generator.data.answer.AnswerMetrics;
-import com.ensepro.query.generator.data.answer.Length;
-import com.ensepro.query.generator.data.answer.WeightClasses;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Metric;
+import com.ensepro.answer.generator.data.RelevantKeyword;
+import com.ensepro.answer.generator.data.Triple;
+import com.ensepro.answer.generator.data.answer.Answer;
+import com.ensepro.answer.generator.data.answer.AnswerDetails;
+import com.ensepro.answer.generator.data.answer.AnswerMetrics;
+import com.ensepro.answer.generator.data.answer.Length;
+import com.ensepro.answer.generator.data.answer.WeightClasses;
 import lombok.Builder;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.ensepro.query.generator.domain.GrammarClass.PROP;
+import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 

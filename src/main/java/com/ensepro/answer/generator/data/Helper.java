@@ -1,8 +1,7 @@
-package com.ensepro.query.generator.data;
+package com.ensepro.answer.generator.data;
 
-import com.ensepro.query.generator.data.normalized.NormalizedJsonHelper;
-import com.ensepro.query.generator.domain.GrammarClass;
-import com.ensepro.query.generator.domain.MetricPolicy;
+import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
+import com.ensepro.answer.generator.domain.GrammarClass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -53,7 +52,7 @@ public class Helper {
         normalizedJsonHelper.getMetricas().forEach((key, value) ->
                 metrics.put(key, Metric.builder()
                         .weight(value.getPeso())
-                        .policy(MetricPolicy.valueOf(value.getPolicy().toString()))
+                        .policy(value.getPolicy())
                         .build())
         );
 

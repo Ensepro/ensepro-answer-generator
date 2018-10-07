@@ -1,6 +1,6 @@
-package com.ensepro.query.generator.data.answer;
+package com.ensepro.answer.generator.data.answer;
 
-import com.ensepro.query.generator.data.Triple;
+import com.ensepro.answer.generator.data.Triple;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;

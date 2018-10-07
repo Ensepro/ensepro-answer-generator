@@ -1,4 +1,4 @@
-package com.ensepro.query.generator.utils;
+package com.ensepro.answer.generator.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
