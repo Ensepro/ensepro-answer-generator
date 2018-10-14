@@ -19,10 +19,10 @@ public class Configuration {
 
     private static ConfigurationBuilder getDefaultBuilder() {
         return Configuration.builder()
-                .loadFile(DEFAULT_LOAD_FILE)
-                .saveFile(DEFAULT_SAVE_FILE)
-                .level(DEFAULT_LEVEL)
-                .resultSize(DEFAULT_RESULT_SIZE);
+            .loadFile(DEFAULT_LOAD_FILE)
+            .saveFile(DEFAULT_SAVE_FILE)
+            .level(DEFAULT_LEVEL)
+            .resultSize(DEFAULT_RESULT_SIZE);
 
     }
 

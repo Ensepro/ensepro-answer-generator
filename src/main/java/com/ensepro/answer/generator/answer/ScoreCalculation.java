@@ -1,5 +1,16 @@
 package com.ensepro.answer.generator.answer;
 
+import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
+import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.ensepro.answer.generator.data.Helper;
 import com.ensepro.answer.generator.data.Metric;
 import com.ensepro.answer.generator.data.RelevantKeyword;
@@ -11,17 +22,6 @@ import com.ensepro.answer.generator.data.answer.Length;
 import com.ensepro.answer.generator.data.answer.WeightClasses;
 
 import lombok.Builder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
-import static java.util.Arrays.asList;
-import static java.util.Objects.isNull;
 
 @Builder
 public class ScoreCalculation {

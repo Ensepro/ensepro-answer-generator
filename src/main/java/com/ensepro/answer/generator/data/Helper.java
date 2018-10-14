@@ -1,14 +1,15 @@
 package com.ensepro.answer.generator.data;
 
-import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
-import com.ensepro.answer.generator.domain.GrammarClass;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
+import com.ensepro.answer.generator.domain.GrammarClass;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Singular;
 
 @Getter
 @Builder
@@ -35,25 +36,25 @@ public class Helper {
 
         normalizedJsonHelper.getMap_resource_to_tr().forEach((key, value) -> {
             resource2keyword.put(key, RelevantKeyword.builder()
-                    .keyword(value.get(0).toString())
-                    .weight(Double.valueOf(value.get(1).toString()))
-                    .grammarClass(GrammarClass.valueOf(value.get(2).toString()))
-                    .build());
+                .keyword(value.get(0).toString())
+                .weight(Double.valueOf(value.get(1).toString()))
+                .grammarClass(GrammarClass.valueOf(value.get(2).toString()))
+                .build());
         });
 
         normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
             helper.keyword(RelevantKeyword.builder()
-                    .keyword(termo.get(0).toString())
-                    .weight(Double.valueOf(termo.get(1).toString()))
-                    .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
-                    .build());
+                .keyword(termo.get(0).toString())
+                .weight(Double.valueOf(termo.get(1).toString()))
+                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
+                .build());
         });
 
         normalizedJsonHelper.getMetricas().forEach((key, value) ->
-                metrics.put(key, Metric.builder()
-                        .weight(value.getPeso())
-                        .policy(value.getPolicy())
-                        .build())
+            metrics.put(key, Metric.builder()
+                .weight(value.getPeso())
+                .policy(value.getPolicy())
+                .build())
         );
 
         helper.resource2var(normalizedJsonHelper.getMap_resource_to_var());

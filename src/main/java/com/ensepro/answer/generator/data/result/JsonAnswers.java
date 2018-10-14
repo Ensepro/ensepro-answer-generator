@@ -1,12 +1,13 @@
 package com.ensepro.answer.generator.data.result;
 
+import java.util.List;
+
 import com.ensepro.answer.generator.data.answer.Answer;
 import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder

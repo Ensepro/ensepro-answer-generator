@@ -1,18 +1,19 @@
 package com.ensepro.answer.generator.data.normalized;
 
-import com.ensepro.answer.generator.data.Helper;
-import com.ensepro.answer.generator.data.Metrica;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
+import static java.util.Arrays.asList;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Metrica;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 /*
  * This class represent the json loaded from the json file.
@@ -44,18 +45,19 @@ public class NormalizedJsonHelper {
         final Map<String, List<Object>> map_resource_to_tr = new HashMap<>();
         final Map<String, Metrica> metricas = new HashMap<>();
         helper.getResource2keyword().forEach((key, value) ->
-                map_resource_to_tr.put(key, asList(value.getKeyword(), value.getWeight(), value.getGrammarClass()))
+            map_resource_to_tr.put(key, asList(value.getKeyword(), value.getWeight(), value.getGrammarClass()))
         );
 
         helper.getKeywords().forEach(termo ->
-                normalizedJsonHelper.termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
+            normalizedJsonHelper
+                .termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
         );
 
         helper.getMetrics().forEach((key, value) ->
-                metricas.put(key, Metrica.builder()
-                        .peso(value.getWeight())
-                        .policy(value.getPolicy())
-                        .build())
+            metricas.put(key, Metrica.builder()
+                .peso(value.getWeight())
+                .policy(value.getPolicy())
+                .build())
         );
 
         normalizedJsonHelper.map_resource_to_var(helper.getResource2var());
@@ -66,7 +68,6 @@ public class NormalizedJsonHelper {
         normalizedJsonHelper.sinonimos(helper.getSynonyms());
         normalizedJsonHelper.metricas(metricas);
         normalizedJsonHelper.substantivos_proprios_frase(helper.getProperNouns());
-
 
         return normalizedJsonHelper.build();
     }

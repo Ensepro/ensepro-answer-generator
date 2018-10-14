@@ -1,18 +1,11 @@
 package com.ensepro.answer.generator.answer;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import com.ensepro.answer.generator.answer.consumer.AnswerConsumer;
 import com.ensepro.answer.generator.answer.producer.AnswerProducer;

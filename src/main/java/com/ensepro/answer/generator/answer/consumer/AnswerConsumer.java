@@ -11,7 +11,9 @@ import com.ensepro.answer.generator.answer.producer.AnswerProducer;
 import com.ensepro.answer.generator.data.answer.Answer;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AnswerConsumer extends Thread {
 
     private final AnswerProducer producer;
@@ -28,16 +30,17 @@ public class AnswerConsumer extends Thread {
     @Override
     public void run() {
         try {
-            System.out.println(getName() + ": producer.join()");
+            log.info("producer.join()");
             producer.join();
-            System.out.println(getName() + ": executing callables (" + producer.getCallables().size() + ")");
+            log.info("executing callables (" + producer.getCallables().size() + ")");
             executorService.invokeAll(producer.getCallables())
                 .stream()
                 .map(this::mapToAnswer)
                 .filter(Objects::nonNull)
-                .distinct()
                 .forEach(answers::add);
-            System.out.println(getName() + ": callables executed");
+            log.info("callables executed");
+
+            executorService.shutdown();
         } catch (InterruptedException e) {
             //TODO remove
             e.printStackTrace();
@@ -46,7 +49,7 @@ public class AnswerConsumer extends Thread {
 
     private Answer mapToAnswer(Future<Answer> answerFuture) {
         try {
-            answerFuture.get();
+            return answerFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             //TODO remove
             e.printStackTrace();
@@ -59,13 +62,13 @@ public class AnswerConsumer extends Thread {
      */
     public List<Answer> getAnswers() {
         try {
-            System.out.println(getName() + ": getAnswer() - waiting to finish");
+            log.info("getAnswer() - waiting to finish");
             this.join();
         } catch (InterruptedException e) {
             //TODO remove
             e.printStackTrace();
         }
-        System.out.println(getName() + ": getAnswer() - returning");
+        log.info("getAnswer() - returning");
         return this.answers;
     }
 }

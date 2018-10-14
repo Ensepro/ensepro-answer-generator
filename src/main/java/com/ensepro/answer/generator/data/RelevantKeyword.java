@@ -1,10 +1,11 @@
 package com.ensepro.answer.generator.data;
 
+import java.util.Objects;
+
 import com.ensepro.answer.generator.domain.GrammarClass;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.Objects;
 
 @Getter
 @Builder
@@ -16,8 +17,12 @@ public class RelevantKeyword {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RelevantKeyword that = (RelevantKeyword) o;
         return Objects.equals(keyword, that.keyword);
     }

@@ -9,7 +9,9 @@ import com.ensepro.answer.generator.data.Triples;
 import com.ensepro.answer.generator.data.answer.Answer;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AnswerProducerLevel2 extends AnswerProducer {
 
     @Builder
@@ -21,7 +23,7 @@ public class AnswerProducerLevel2 extends AnswerProducer {
 
     @Override
     public void run() {
-        System.out.println(getName() + ": Starting");
+        log.info("Starting");
         triples.getTriples().forEach(triple1 -> {
             triples.getTriples().forEach(triple2 -> {
                 if (shouldAdd(triple1, triple2)) {
@@ -29,7 +31,7 @@ public class AnswerProducerLevel2 extends AnswerProducer {
                 }
             });
         });
-        System.out.println(getName() + ": Finished");
+        log.info("Finished");
     }
 
     private boolean shouldAdd(final Triple triple1, final Triple triple2) {

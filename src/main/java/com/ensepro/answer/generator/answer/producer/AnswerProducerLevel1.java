@@ -8,7 +8,9 @@ import com.ensepro.answer.generator.data.Triples;
 import com.ensepro.answer.generator.data.answer.Answer;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AnswerProducerLevel1 extends AnswerProducer {
 
     @Builder
@@ -20,8 +22,8 @@ public class AnswerProducerLevel1 extends AnswerProducer {
 
     @Override
     public void run() {
-        System.out.println(getName() + ": Starting");
+        log.info("Starting");
         triples.getTriples().forEach(this::put);
-        System.out.println(getName() + ": Finished");
+        log.info("Finished");
     }
 }

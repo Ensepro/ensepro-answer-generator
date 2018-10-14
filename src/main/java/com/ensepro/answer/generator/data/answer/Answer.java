@@ -1,10 +1,6 @@
 package com.ensepro.answer.generator.data.answer;
 
-import com.ensepro.answer.generator.data.Triple;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import static java.util.Objects.nonNull;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -12,7 +8,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static java.util.Objects.nonNull;
+import com.ensepro.answer.generator.data.Triple;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -42,8 +43,12 @@ public class Answer implements Comparable<Answer>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Answer that = (Answer) o;
         return this.getElements().containsAll(that.getElements());
     }
