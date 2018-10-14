@@ -3,6 +3,7 @@ package com.ensepro.answer.generator.data;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import static java.util.Arrays.asList;
 @Getter
 @Builder
 @EqualsAndHashCode
+@ToString
 public class Triple {
 
     private final String subject;
