@@ -22,7 +22,9 @@ import com.ensepro.answer.generator.data.answer.Length;
 import com.ensepro.answer.generator.data.answer.WeightClasses;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Builder
 public class ScoreCalculation {
 
@@ -34,6 +36,7 @@ public class ScoreCalculation {
     }
 
     public Answer calculate(List<Triple> triples) {
+
         final Set<RelevantKeyword> keywords = new HashSet<>();
         final Map<RelevantKeyword, Double> m1Values = new HashMap<>();
         final List<Length> lengths = new ArrayList<>();
@@ -57,7 +60,7 @@ public class ScoreCalculation {
                 final String keyword_name = helper.getSynonyms().get(rk.getKeyword());
 
                 final RelevantKeyword _rk = RelevantKeyword.builder()
-                    .keyword(keyword_name)
+                    .keyword(isNull(keyword_name) ? rk.getKeyword() : keyword_name)
                     .weight(rk.getWeight())
                     .grammarClass(rk.getGrammarClass()).build();
 
@@ -78,11 +81,14 @@ public class ScoreCalculation {
 
         });
 
-        final Double properNouns = (double) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
+        final Double properNouns = (double) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass()))
+            .count();
         final Double elements = (double) (triples.size() * 3);
         final Double m1 = m1Values.values().stream().mapToDouble(Double::doubleValue).sum();
         final Double m2 = (double) keywords.size() / elements;
-        final Double m3 = properNouns / (double) helper.getProperNouns().size();
+        final Double m3 =
+            helper.getProperNouns().size() == 0 ? 0 : properNouns / (double) helper.getProperNouns().size();
+
         final Double score = m1 + (m2 * peso_m2.getWeight()) + (m3 * peso_m3.getWeight());
 
         final WeightClasses wc = WeightClasses.builder().keyword(new ArrayList<>(keywords)).build();
@@ -111,6 +117,7 @@ public class ScoreCalculation {
             .triples(triples)
             .details(details)
             .build();
+
     }
 
     private void calculateM1(final Map<RelevantKeyword, Double> m1Values, final Metric peso_m1, final String resource,

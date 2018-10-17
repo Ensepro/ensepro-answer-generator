@@ -2,9 +2,11 @@ package com.ensepro.answer.generator.config;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class Configuration {
 
     private static final String DEFAULT_LOAD_FILE = "resultado_normalizado.json";
@@ -14,6 +16,7 @@ public class Configuration {
 
     private final String loadFile;
     private final String saveFile;
+    private final Integer threads;
     private final Integer level; //2 - combination of 2 triples. 3 - combination of 3 triples.
     private final Integer resultSize;
 
@@ -42,7 +45,11 @@ public class Configuration {
         }
 
         if (args.length > 2) {
-            config.level(Integer.valueOf(args[2]));
+            config.threads(Integer.valueOf(args[2]));
+        }
+
+        if (args.length > 3) {
+            config.level(Integer.valueOf(args[3]));
         }
 
         return config.build();

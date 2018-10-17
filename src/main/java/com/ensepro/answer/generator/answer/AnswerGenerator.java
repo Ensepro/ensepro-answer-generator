@@ -1,5 +1,7 @@
 package com.ensepro.answer.generator.answer;
 
+import static java.util.Objects.isNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,8 +22,7 @@ import lombok.Builder;
 @Builder
 public class AnswerGenerator {
 
-    private static final int THREADS = 20;
-
+    private final Integer threads;
     private final Helper helper;
     private final Triples triples;
     private final ScoreCalculation scoreCalculator;
@@ -44,7 +45,7 @@ public class AnswerGenerator {
     private void createConsumers() {
         producers.forEach(producer -> {
             final AnswerConsumer consumer = AnswerConsumer.builder()
-                .executorService(Executors.newFixedThreadPool(THREADS))
+                .executorService(Executors.newFixedThreadPool(getThreads()))
                 .producer(producer)
                 .name(producer.getName() + ".Consumer")
                 .build();
@@ -84,5 +85,7 @@ public class AnswerGenerator {
 //        }
     }
 
-
+    public Integer getThreads() {
+        return isNull(threads) || threads < 1 ? 1 : threads;
+    }
 }

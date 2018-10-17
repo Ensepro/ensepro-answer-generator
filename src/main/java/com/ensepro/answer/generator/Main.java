@@ -22,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        log.info("####################################################################################");
-        log.info("#### STARTING PROCESS ");
-        log.info("####################################################################################");
         Configuration config = Configuration.fromArgs(args);
+        log.info("####################################################################################");
+        log.info("#### STARTING PROCESS: {}", config);
+        log.info("####################################################################################");
         NormalizedJson json = JsonUtil.read(config.getLoadFile(), NormalizedJson.class);
 
         Helper helper = Helper.fromNormalizedHelper(json.getHelper());
@@ -35,6 +35,7 @@ public class Main {
             .helper(helper)
             .triples(triples)
             .level(config.getLevel())
+            .threads(config.getThreads())
             .scoreCalculator(ScoreCalculation.builder()
                 .helper(helper)
                 .build())
