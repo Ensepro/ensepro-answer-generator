@@ -42,8 +42,7 @@ public class AnswerConsumer extends Thread {
 
             executorService.shutdown();
         } catch (InterruptedException e) {
-            //TODO remove
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
@@ -51,8 +50,7 @@ public class AnswerConsumer extends Thread {
         try {
             return answerFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            //TODO remove
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -65,8 +63,7 @@ public class AnswerConsumer extends Thread {
             log.info("getAnswer() - waiting to finish");
             this.join();
         } catch (InterruptedException e) {
-            //TODO remove
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         log.info("getAnswer() - returning");
         return this.answers;

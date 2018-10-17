@@ -3,9 +3,6 @@ package com.ensepro.answer.generator;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 import com.ensepro.answer.generator.answer.AnswerGenerator;
@@ -19,9 +16,15 @@ import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
 import com.ensepro.answer.generator.data.result.JsonAnswers;
 import com.ensepro.answer.generator.utils.JsonUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        log.info("####################################################################################");
+        log.info("#### STARTING PROCESS ");
+        log.info("####################################################################################");
         Configuration config = Configuration.fromArgs(args);
         NormalizedJson json = JsonUtil.read(config.getLoadFile(), NormalizedJson.class);
 
