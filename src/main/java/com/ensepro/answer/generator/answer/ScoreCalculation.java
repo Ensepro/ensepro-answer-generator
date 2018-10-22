@@ -131,12 +131,12 @@ public class ScoreCalculation {
 
         switch (peso_m1.getPolicy()) {
             case BEST_MATCH:
-                if (currentM1 < existentM1) {
+                if (currentM1 > existentM1) {
                     m1Values.put(_rk, currentM1);
                 }
                 break;
             case WORST_MATCH:
-                if (currentM1 > existentM1) {
+                if (currentM1 < existentM1) {
                     m1Values.put(_rk, currentM1);
                 }
                 break;
