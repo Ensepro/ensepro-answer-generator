@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class Metric {
 
-    private Double weight;
+    private Float weight;
     private MetricPolicy policy;
 
 }

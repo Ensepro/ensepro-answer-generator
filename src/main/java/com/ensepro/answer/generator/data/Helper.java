@@ -37,7 +37,7 @@ public class Helper {
         normalizedJsonHelper.getMap_resource_to_tr().forEach((key, value) -> {
             resource2keyword.put(key, RelevantKeyword.builder()
                 .keyword(value.get(0).toString())
-                .weight(Double.valueOf(value.get(1).toString()))
+                .weight(Float.valueOf(value.get(1).toString()))
                 .grammarClass(GrammarClass.valueOf(value.get(2).toString()))
                 .build());
         });
@@ -45,7 +45,7 @@ public class Helper {
         normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
             helper.keyword(RelevantKeyword.builder()
                 .keyword(termo.get(0).toString())
-                .weight(Double.valueOf(termo.get(1).toString()))
+                .weight(Float.valueOf(termo.get(1).toString()))
                 .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
                 .build());
         });

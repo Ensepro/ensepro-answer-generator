@@ -14,7 +14,7 @@ import lombok.ToString;
 public class RelevantKeyword {
 
     private final String keyword;
-    private final Double weight;
+    private final Float weight;
     private final GrammarClass grammarClass;
 
     @Override
