@@ -57,10 +57,8 @@ public class ScoreCalculation {
                     continue;
                 }
 
-                final String keyword_name = helper.getSynonyms().get(rk.getKeyword());
-
                 final RelevantKeyword _rk = RelevantKeyword.builder()
-                    .keyword(isNull(keyword_name) ? rk.getKeyword() : keyword_name)
+                    .keyword(rk.getKeyword())
                     .weight(rk.getWeight())
                     .grammarClass(rk.getGrammarClass()).build();
 
