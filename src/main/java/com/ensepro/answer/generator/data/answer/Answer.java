@@ -20,7 +20,7 @@ import lombok.Getter;
 public class Answer implements Comparable<Answer>, Serializable {
 
     private final List<Triple> triples;
-    private final Double score;
+    private final Float score;
     private final AnswerDetails details;
 
     @JsonIgnore

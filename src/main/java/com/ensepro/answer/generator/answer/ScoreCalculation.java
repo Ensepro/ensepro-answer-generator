@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScoreCalculation {
 
     private final Helper helper;
-    private static final double FIXED_FACTOR = 1.1;
+    private static final float FIXED_FACTOR = 1.1f;
 
     public Answer calculate(Triple... triples) {
         return calculate(asList(triples));
@@ -38,7 +38,7 @@ public class ScoreCalculation {
     public Answer calculate(List<Triple> triples) {
 
         final Set<RelevantKeyword> keywords = new HashSet<>();
-        final Map<RelevantKeyword, Double> m1Values = new HashMap<>();
+        final Map<RelevantKeyword, Float> m1Values = new HashMap<>();
         final List<Length> lengths = new ArrayList<>();
 
         final Metric peso_m1 = helper.getMetrics().getOrDefault("m1", null);
@@ -81,15 +81,15 @@ public class ScoreCalculation {
 
         });
 
-        final Double properNouns = (double) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass()))
+        final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass()))
             .count();
-        final Double elements = (double) (triples.size() * 3);
-        final Double m1 = m1Values.values().stream().mapToDouble(Double::doubleValue).sum();
-        final Double m2 = (double) keywords.size() / elements;
-        final Double m3 =
-            helper.getProperNouns().size() == 0 ? 0 : properNouns / (double) helper.getProperNouns().size();
+        final Float elements = (float) (triples.size() * 3);
+        final Float m1 = (float) m1Values.values().stream().mapToDouble(Float::doubleValue).sum();
+        final Float m2 = (float) keywords.size() / elements;
+        final Float m3 =
+            helper.getProperNouns().size() == 0 ? 0 : properNouns / (float) helper.getProperNouns().size();
 
-        final Double score = m1 + (m2 * peso_m2.getWeight()) + (m3 * peso_m3.getWeight());
+        final Float score = m1 + (m2 * peso_m2.getWeight()) + (m3 * peso_m3.getWeight());
 
         final WeightClasses wc = WeightClasses.builder().keyword(new ArrayList<>(keywords)).build();
 
@@ -120,10 +120,10 @@ public class ScoreCalculation {
 
     }
 
-    private void calculateM1(final Map<RelevantKeyword, Double> m1Values, final Metric peso_m1, final String resource,
+    private void calculateM1(final Map<RelevantKeyword, Float> m1Values, final Metric peso_m1, final String resource,
         final RelevantKeyword _rk) {
-        final double currentM1 = _calculateM1(resource, _rk, peso_m1.getWeight());
-        final Double existentM1 = m1Values.getOrDefault(_rk, null);
+        final float currentM1 = _calculateM1(resource, _rk, peso_m1.getWeight());
+        final Float existentM1 = m1Values.getOrDefault(_rk, null);
         if (isNull(existentM1)) {
             m1Values.put(_rk, currentM1);
             return;
@@ -141,7 +141,7 @@ public class ScoreCalculation {
                 }
                 break;
             case AVG:
-                double avg = (currentM1 + existentM1) / 2;
+                float avg = (currentM1 + existentM1) / 2;
                 m1Values.put(_rk, avg);
                 break;
         }
@@ -153,12 +153,12 @@ public class ScoreCalculation {
      * @param rk TermoRelevante considerado para o metch (termo original e não o sinonimo)
      * @param peso_m1 (peso da métrica 1)
      */
-    private double _calculateM1(final String resource, final RelevantKeyword rk, final double peso_m1) {
-        double keywordLength = rk.getKeyword().length();
-        double matchLength = resource.length();
+    private float _calculateM1(final String resource, final RelevantKeyword rk, final float peso_m1) {
+        float keywordLength = rk.getKeyword().length();
+        float matchLength = resource.length();
 
-        double dividend = rk.getWeight() * keywordLength;
-        double divider = (keywordLength - 1) + Math.pow(FIXED_FACTOR, (matchLength - keywordLength));
+        float dividend = rk.getWeight() * keywordLength;
+        float divider = (float) ((keywordLength - 1) + Math.pow(FIXED_FACTOR, (matchLength - keywordLength)));
 
         return (dividend / divider) * peso_m1;
     }

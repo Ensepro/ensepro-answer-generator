@@ -16,7 +16,7 @@ import lombok.Singular;
 public class AnswerMetrics implements Serializable {
 
     @Singular
-    private List<Double> scoreMetrics;
+    private List<Float> scoreMetrics;
     @Singular
     private List<Metric> metrics;
 

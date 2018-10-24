@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class Metrica {
 
-    private Double peso;
+    private Float peso;
     private MetricPolicy policy;
 
 }
