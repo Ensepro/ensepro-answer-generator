@@ -105,7 +105,7 @@ public class ScoreCalculation {
             .matches(keywords.size())
             .nouns(helper.getProperNouns().size())
             .nounsMatch(properNouns.intValue())
-            .lentghs(lengths)
+            .lengths(lengths)
             .weightClasses(wc)
             .metrics(am)
             .build();

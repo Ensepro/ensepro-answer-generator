@@ -29,11 +29,9 @@ public class NormalizedJsonHelper {
 
     Map<String, String> map_resource_to_var;
     Map<String, String> map_var_to_resource;
-    Map<String, Integer> map_distancias_edicao;
     Map<String, List<Object>> map_resource_to_tr;
     @Singular
-    List<List<Object>> termos_relevantes;
-    Map<String, List<String>> termos_relacionados;
+//    List<List<Object>> termos_relevantes;
     Map<String, String> sinonimos;
     List<String> substantivos_proprios_frase;
     Map<String, Metrica> metricas;
@@ -48,10 +46,10 @@ public class NormalizedJsonHelper {
             map_resource_to_tr.put(key, asList(value.getKeyword(), value.getWeight(), value.getGrammarClass()))
         );
 
-        helper.getKeywords().forEach(termo ->
-            normalizedJsonHelper
-                .termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
-        );
+//        helper.getKeywords().forEach(termo ->
+//            normalizedJsonHelper
+//                .termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
+//        );
 
         helper.getMetrics().forEach((key, value) ->
             metricas.put(key, Metrica.builder()
@@ -62,9 +60,7 @@ public class NormalizedJsonHelper {
 
         normalizedJsonHelper.map_resource_to_var(helper.getResource2var());
         normalizedJsonHelper.map_var_to_resource(helper.getVar2resource());
-        normalizedJsonHelper.map_distancias_edicao(helper.getEditDistances());
         normalizedJsonHelper.map_resource_to_tr(map_resource_to_tr);
-        normalizedJsonHelper.termos_relacionados(helper.getKeywordsRelated());
         normalizedJsonHelper.sinonimos(helper.getSynonyms());
         normalizedJsonHelper.metricas(metricas);
         normalizedJsonHelper.substantivos_proprios_frase(helper.getProperNouns());

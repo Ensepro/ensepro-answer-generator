@@ -17,12 +17,10 @@ public class Helper {
 
     private final Map<String, String> resource2var;
     private final Map<String, String> var2resource;
-    private final Map<String, Integer> editDistances;
     private final Map<String, RelevantKeyword> resource2keyword;
 
     @Singular
-    private final List<RelevantKeyword> keywords;
-    private final Map<String, List<String>> keywordsRelated;
+//    private final List<RelevantKeyword> keywords;
     private final Map<String, String> synonyms;
     private final List<String> properNouns;
     private final Map<String, Metric> metrics;
@@ -42,13 +40,13 @@ public class Helper {
                 .build());
         });
 
-        normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
-            helper.keyword(RelevantKeyword.builder()
-                .keyword(termo.get(0).toString())
-                .weight(Float.valueOf(termo.get(1).toString()))
-                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
-                .build());
-        });
+//        normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
+//            helper.keyword(RelevantKeyword.builder()
+//                .keyword(termo.get(0).toString())
+//                .weight(Float.valueOf(termo.get(1).toString()))
+//                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
+//                .build());
+//        });
 
         normalizedJsonHelper.getMetricas().forEach((key, value) ->
             metrics.put(key, Metric.builder()
@@ -59,9 +57,7 @@ public class Helper {
 
         helper.resource2var(normalizedJsonHelper.getMap_resource_to_var());
         helper.var2resource(normalizedJsonHelper.getMap_var_to_resource());
-        helper.editDistances(normalizedJsonHelper.getMap_distancias_edicao());
         helper.resource2keyword(resource2keyword);
-        helper.keywordsRelated(normalizedJsonHelper.getTermos_relacionados());
         helper.synonyms(normalizedJsonHelper.getSinonimos());
         helper.properNouns(normalizedJsonHelper.getSubstantivos_proprios_frase());
         helper.metrics(metrics);

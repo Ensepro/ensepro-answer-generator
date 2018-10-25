@@ -14,7 +14,7 @@ public class AnswerDetails implements Serializable {
 
     private AnswerMetrics metrics;
     private WeightClasses weightClasses;
-    private List<Length> lentghs;
+    private List<Length> lengths;
     private Integer matches;
     private Integer elements;
     private Integer nouns;
