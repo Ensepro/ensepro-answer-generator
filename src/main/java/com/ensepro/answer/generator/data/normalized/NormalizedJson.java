@@ -18,6 +18,6 @@ import lombok.Getter;
 public class NormalizedJson {
 
     private final NormalizedJsonHelper helper;
-    private final List<List<String>> values;
+    private final List<List<Integer>> values;
 
 }

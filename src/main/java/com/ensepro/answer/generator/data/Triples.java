@@ -15,7 +15,7 @@ public class Triples {
     @Singular
     private final List<Triple> triples;
 
-    public static Triples fromNormalizedValues(List<List<String>> normalizedJsonValues) {
+    public static Triples fromNormalizedValues(List<List<Integer>> normalizedJsonValues) {
         final TriplesBuilder triples = Triples.builder();
         normalizedJsonValues.stream().map(Triple::fromList).forEach(triples::triple);
         return triples.build();

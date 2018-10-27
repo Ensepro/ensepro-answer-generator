@@ -49,8 +49,8 @@ public class ScoreCalculation {
             final Map<String, Integer> lengthKeyword = new HashMap<>();
             final Map<String, Integer> lengthMatch = new HashMap<>();
 
-            for (String resourceVarName : triple.asStringList()) {
-                final String resource = helper.getVar2resource().getOrDefault(resourceVarName, null);
+            for (Integer resourceVarName : triple.asList()) {
+                final String resource = helper.getVar2resource().getOrDefault(resourceVarName.toString(), null);
                 final RelevantKeyword rk = helper.getResource2keyword().getOrDefault(resource, null);
 
                 if (isNull(rk)) {

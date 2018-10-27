@@ -15,7 +15,7 @@ import lombok.Singular;
 @Builder
 public class Helper {
 
-    private final Map<String, String> resource2var;
+    private final Map<String, Integer> resource2var;
     private final Map<String, String> var2resource;
     private final Map<String, RelevantKeyword> resource2keyword;
 

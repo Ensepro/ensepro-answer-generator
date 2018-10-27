@@ -27,7 +27,7 @@ import lombok.Singular;
 // TODO renomar classe
 public class NormalizedJsonHelper {
 
-    Map<String, String> map_resource_to_var;
+    Map<String, Integer> map_resource_to_var;
     Map<String, String> map_var_to_resource;
     Map<String, List<Object>> map_resource_to_tr;
     @Singular

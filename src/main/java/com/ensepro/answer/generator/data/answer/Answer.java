@@ -25,19 +25,19 @@ public class Answer implements Comparable<Answer>, Serializable {
 
     @JsonIgnore
     @Getter(AccessLevel.NONE)
-    private Set<String> elements;
+    private Set<Integer> elements;
 
     @Override
     public int compareTo(Answer o) {
         return o.score.compareTo(this.score);
     }
 
-    private Set<String> getElements() {
+    private Set<Integer> getElements() {
         if (nonNull(elements)) {
             return this.elements;
         }
         this.elements = new HashSet<>();
-        triples.forEach(tripla -> elements.addAll(tripla.asStringList()));
+        triples.forEach(tripla -> elements.addAll(tripla.asList()));
         return this.elements;
     }
 
