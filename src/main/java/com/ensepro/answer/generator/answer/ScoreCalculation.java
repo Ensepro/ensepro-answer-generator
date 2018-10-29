@@ -1,6 +1,11 @@
 package com.ensepro.answer.generator.answer;
 
 import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
+import static com.ensepro.answer.generator.domain.GrammarClass.SUB;
+import static com.ensepro.answer.generator.domain.GrammarClass.VERB;
+import static com.ensepro.answer.generator.domain.Position.OBJECT;
+import static com.ensepro.answer.generator.domain.Position.PREDICATE;
+import static com.ensepro.answer.generator.domain.Position.SUBJECT;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 
@@ -20,6 +25,7 @@ import com.ensepro.answer.generator.data.answer.AnswerDetails;
 import com.ensepro.answer.generator.data.answer.AnswerMetrics;
 import com.ensepro.answer.generator.data.answer.Length;
 import com.ensepro.answer.generator.data.answer.WeightClasses;
+import com.ensepro.answer.generator.domain.Position;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -49,26 +55,32 @@ public class ScoreCalculation {
             final Map<String, Integer> lengthKeyword = new HashMap<>();
             final Map<String, Integer> lengthMatch = new HashMap<>();
 
-            for (Integer resourceVarName : triple.asList()) {
-                final String resource = helper.getVar2resource().getOrDefault(resourceVarName.toString(), null);
-                final RelevantKeyword rk = helper.getResource2keyword().getOrDefault(resource, null);
+            populateValues(
+                keywords,
+                m1Values,
+                peso_m1,
+                lengthKeyword,
+                lengthMatch,
+                triple.getSubject(),
+                SUBJECT);
 
-                if (isNull(rk)) {
-                    continue;
-                }
+            populateValues(
+                keywords,
+                m1Values,
+                peso_m1,
+                lengthKeyword,
+                lengthMatch,
+                triple.getPredicate(),
+                PREDICATE);
 
-                final RelevantKeyword _rk = RelevantKeyword.builder()
-                    .keyword(rk.getKeyword())
-                    .weight(rk.getWeight())
-                    .grammarClass(rk.getGrammarClass()).build();
-
-                keywords.add(_rk);
-
-                calculateM1(m1Values, peso_m1, resource, _rk);
-
-                lengthMatch.put(resource, resource.length());
-                lengthKeyword.put(_rk.getKeyword(), _rk.getKeyword().length());
-            }
+            populateValues(
+                keywords,
+                m1Values,
+                peso_m1,
+                lengthKeyword,
+                lengthMatch,
+                triple.getObject(),
+                OBJECT);
 
             final Length length = Length.builder()
                 .keyword(lengthKeyword)
@@ -79,13 +91,13 @@ public class ScoreCalculation {
 
         });
 
-        final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass()))
-            .count();
+        final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
         final Float elements = (float) (triples.size() * 3);
         final Float m1 = (float) m1Values.values().stream().mapToDouble(Float::doubleValue).sum();
         final Float m2 = (float) keywords.size() / elements;
-        final Float m3 =
-            helper.getProperNouns().size() == 0 ? 0 : properNouns / (float) helper.getProperNouns().size();
+        final Float m3 = helper.getProperNouns().size() == 0
+            ? 0
+            : properNouns / (float) helper.getProperNouns().size();
 
         final Float score = m1 + (m2 * peso_m2.getWeight()) + (m3 * peso_m3.getWeight());
 
@@ -116,6 +128,49 @@ public class ScoreCalculation {
             .details(details)
             .build();
 
+    }
+
+    private void populateValues(final Set<RelevantKeyword> keywords,
+        final Map<RelevantKeyword, Float> m1Values,
+        final Metric peso_m1,
+        final Map<String, Integer> lengthKeyword,
+        final Map<String, Integer> lengthMatch,
+        final Integer resourceVarName,
+        final Position position
+    ) {
+        final String resource = helper.getVar2resource().getOrDefault(resourceVarName.toString(), null);
+        final RelevantKeyword rk = helper.getResource2keyword().getOrDefault(resource, null);
+
+        if (isNull(rk)) {
+            return;
+        }
+
+        if (!validPosition(rk, position)) {
+            return;
+        }
+
+        keywords.add(rk);
+
+        calculateM1(m1Values, peso_m1, resource, rk);
+
+        lengthMatch.put(resource, resource.length());
+        lengthKeyword.put(rk.getKeyword(), rk.getKeyword().length());
+    }
+
+    private boolean validPosition(final RelevantKeyword rk, final Position position) {
+        if (SUBJECT.equals(position)) {
+            return PROP.equals(rk.getGrammarClass())
+                || SUB.equals(rk.getGrammarClass());
+        }
+        if (PREDICATE.equals(position)) {
+            return VERB.equals(rk.getGrammarClass())
+                || SUB.equals(rk.getGrammarClass());
+        }
+        if (OBJECT.equals(position)) {
+            return PROP.equals(rk.getGrammarClass())
+                || SUB.equals(rk.getGrammarClass());
+        }
+        return true;
     }
 
     private void calculateM1(final Map<RelevantKeyword, Float> m1Values, final Metric peso_m1, final String resource,
