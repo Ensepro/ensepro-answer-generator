@@ -1,5 +1,6 @@
 package com.ensepro.answer.generator.answer;
 
+import static com.ensepro.answer.generator.domain.GrammarClass.ADJ;
 import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static com.ensepro.answer.generator.domain.GrammarClass.SUB;
 import static com.ensepro.answer.generator.domain.GrammarClass.VERB;
@@ -25,6 +26,7 @@ import com.ensepro.answer.generator.data.answer.AnswerDetails;
 import com.ensepro.answer.generator.data.answer.AnswerMetrics;
 import com.ensepro.answer.generator.data.answer.Length;
 import com.ensepro.answer.generator.data.answer.WeightClasses;
+import com.ensepro.answer.generator.domain.GrammarClass;
 import com.ensepro.answer.generator.domain.Position;
 
 import lombok.Builder;
@@ -160,15 +162,18 @@ public class ScoreCalculation {
     private boolean validPosition(final RelevantKeyword rk, final Position position) {
         if (SUBJECT.equals(position)) {
             return PROP.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass())
+                || ADJ.equals(rk.getGrammarClass());
         }
         if (PREDICATE.equals(position)) {
             return VERB.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass())
+                || ADJ.equals(rk.getGrammarClass());
         }
         if (OBJECT.equals(position)) {
             return PROP.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass())
+                || ADJ.equals(rk.getGrammarClass());
         }
         return true;
     }
