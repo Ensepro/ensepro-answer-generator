@@ -1,6 +1,5 @@
 package com.ensepro.answer.generator.answer;
 
-import static com.ensepro.answer.generator.domain.GrammarClass.ADJ;
 import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static com.ensepro.answer.generator.domain.GrammarClass.SUB;
 import static com.ensepro.answer.generator.domain.GrammarClass.VERB;
@@ -54,15 +53,15 @@ public class ScoreCalculation {
         final Metric peso_m3 = helper.getMetrics().getOrDefault("m3", null);
 
         triples.forEach(triple -> {
-            final Map<String, Integer> lengthKeyword = new HashMap<>();
-            final Map<String, Integer> lengthMatch = new HashMap<>();
+            final Map<String, Integer> lengthsKeyword = new HashMap<>();
+            final Map<String, Integer> lengthsMatch = new HashMap<>();
 
             populateValues(
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getSubject(),
                 SUBJECT);
 
@@ -70,23 +69,32 @@ public class ScoreCalculation {
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getPredicate(),
                 PREDICATE);
+
+            helper.getKeywords().stream()
+                .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+                .forEach(adjKeyword -> {
+                    String resource = helper.getVar2resource().get(triple.getPredicate().toString());
+                    if (resource.contains(adjKeyword.getKeyword())) {
+                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                    }
+                });
 
             populateValues(
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getObject(),
                 OBJECT);
 
             final Length length = Length.builder()
-                .keyword(lengthKeyword)
-                .match(lengthMatch)
+                .keyword(lengthsKeyword)
+                .match(lengthsMatch)
                 .build();
 
             lengths.add(length);
@@ -162,18 +170,15 @@ public class ScoreCalculation {
     private boolean validPosition(final RelevantKeyword rk, final Position position) {
         if (SUBJECT.equals(position)) {
             return PROP.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass())
-                || ADJ.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass());
         }
         if (PREDICATE.equals(position)) {
             return VERB.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass())
-                || ADJ.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass());
         }
         if (OBJECT.equals(position)) {
             return PROP.equals(rk.getGrammarClass())
-                || SUB.equals(rk.getGrammarClass())
-                || ADJ.equals(rk.getGrammarClass());
+                || SUB.equals(rk.getGrammarClass());
         }
         return true;
     }
