@@ -20,7 +20,7 @@ public class Helper {
     private final Map<String, RelevantKeyword> resource2keyword;
 
     @Singular
-//    private final List<RelevantKeyword> keywords;
+    private final List<RelevantKeyword> keywords;
     private final Map<String, String> synonyms;
     private final List<String> properNouns;
     private final Map<String, Metric> metrics;
@@ -40,13 +40,13 @@ public class Helper {
                 .build());
         });
 
-//        normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
-//            helper.keyword(RelevantKeyword.builder()
-//                .keyword(termo.get(0).toString())
-//                .weight(Float.valueOf(termo.get(1).toString()))
-//                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
-//                .build());
-//        });
+        normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
+            helper.keyword(RelevantKeyword.builder()
+                .keyword(termo.get(0).toString())
+                .weight(Float.valueOf(termo.get(1).toString()))
+                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
+                .build());
+        });
 
         normalizedJsonHelper.getMetricas().forEach((key, value) ->
             metrics.put(key, Metric.builder()

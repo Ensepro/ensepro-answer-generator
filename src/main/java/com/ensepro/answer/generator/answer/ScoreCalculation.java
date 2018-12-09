@@ -25,6 +25,7 @@ import com.ensepro.answer.generator.data.answer.AnswerDetails;
 import com.ensepro.answer.generator.data.answer.AnswerMetrics;
 import com.ensepro.answer.generator.data.answer.Length;
 import com.ensepro.answer.generator.data.answer.WeightClasses;
+import com.ensepro.answer.generator.domain.GrammarClass;
 import com.ensepro.answer.generator.domain.Position;
 
 import lombok.Builder;
@@ -52,15 +53,15 @@ public class ScoreCalculation {
         final Metric peso_m3 = helper.getMetrics().getOrDefault("m3", null);
 
         triples.forEach(triple -> {
-            final Map<String, Integer> lengthKeyword = new HashMap<>();
-            final Map<String, Integer> lengthMatch = new HashMap<>();
+            final Map<String, Integer> lengthsKeyword = new HashMap<>();
+            final Map<String, Integer> lengthsMatch = new HashMap<>();
 
             populateValues(
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getSubject(),
                 SUBJECT);
 
@@ -68,23 +69,32 @@ public class ScoreCalculation {
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getPredicate(),
                 PREDICATE);
+
+            helper.getKeywords().stream()
+                .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+                .forEach(adjKeyword -> {
+                    String resource = helper.getVar2resource().get(triple.getPredicate().toString());
+                    if (resource.contains(adjKeyword.getKeyword())) {
+                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                    }
+                });
 
             populateValues(
                 keywords,
                 m1Values,
                 peso_m1,
-                lengthKeyword,
-                lengthMatch,
+                lengthsKeyword,
+                lengthsMatch,
                 triple.getObject(),
                 OBJECT);
 
             final Length length = Length.builder()
-                .keyword(lengthKeyword)
-                .match(lengthMatch)
+                .keyword(lengthsKeyword)
+                .match(lengthsMatch)
                 .build();
 
             lengths.add(length);

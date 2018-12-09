@@ -31,7 +31,7 @@ public class NormalizedJsonHelper {
     Map<String, String> map_var_to_resource;
     Map<String, List<Object>> map_resource_to_tr;
     @Singular
-//    List<List<Object>> termos_relevantes;
+    List<List<Object>> termos_relevantes;
     Map<String, String> sinonimos;
     List<String> substantivos_proprios_frase;
     Map<String, Metrica> metricas;
@@ -46,10 +46,10 @@ public class NormalizedJsonHelper {
             map_resource_to_tr.put(key, asList(value.getKeyword(), value.getWeight(), value.getGrammarClass()))
         );
 
-//        helper.getKeywords().forEach(termo ->
-//            normalizedJsonHelper
-//                .termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
-//        );
+        helper.getKeywords().forEach(termo ->
+            normalizedJsonHelper
+                .termos_relevante(asList(termo.getKeyword(), termo.getWeight(), termo.getGrammarClass()))
+        );
 
         helper.getMetrics().forEach((key, value) ->
             metricas.put(key, Metrica.builder()

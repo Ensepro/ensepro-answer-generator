@@ -4,6 +4,7 @@ public enum GrammarClass {
 
     PROP,
     SUB,
-    VERB;
+    VERB,
+    ADJ;
 
 }
