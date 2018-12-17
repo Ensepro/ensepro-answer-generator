@@ -74,15 +74,6 @@ public class ScoreCalculation {
                 triple.getPredicate(),
                 PREDICATE);
 
-            helper.getKeywords().stream()
-                .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
-                .forEach(adjKeyword -> {
-                    String resource = helper.getVar2resource().get(triple.getPredicate().toString());
-                    if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
-                    }
-                });
-
             populateValues(
                 keywords,
                 m1Values,
@@ -91,6 +82,23 @@ public class ScoreCalculation {
                 lengthsMatch,
                 triple.getObject(),
                 OBJECT);
+
+            helper.getKeywords().stream()
+                .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+                .forEach(adjKeyword -> {
+                    String resource = helper.getVar2resource().get(triple.getPredicate().toString());
+                    if (resource.contains(adjKeyword.getKeyword())) {
+                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                    }
+                    resource = helper.getVar2resource().get(triple.getSubject().toString());
+                    if (resource.contains(adjKeyword.getKeyword())) {
+                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                    }
+                    resource = helper.getVar2resource().get(triple.getObject().toString());
+                    if (resource.contains(adjKeyword.getKeyword())) {
+                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                    }
+                });
 
             final Length length = Length.builder()
                 .keyword(lengthsKeyword)
