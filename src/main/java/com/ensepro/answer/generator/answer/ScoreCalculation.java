@@ -85,21 +85,25 @@ public class ScoreCalculation {
 
             helper.getKeywords().stream()
                 .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+                .distinct()
                 .forEach(adjKeyword -> {
 
                     String resource = helper.getVar2resource().get(triple.getPredicate().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1ADJ(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (PREDICATE): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getSubject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1ADJ(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (SUBJECT): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getObject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1ADJ(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (OBJECT): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
 
                 });
@@ -196,17 +200,15 @@ public class ScoreCalculation {
     }
 
 
-    private void calculateM1ADJ(final Map<RelevantKeyword, Float> m1Values, final Metric peso_m1,
-        final String resource,
+    private void calculateM1ADJ(final Map<RelevantKeyword, Float> m1Values,
         final RelevantKeyword _rk) {
 
-        final float currentM1 = _calculateM1(resource, _rk, peso_m1.getWeight());
         final Float existentM1 = m1Values.getOrDefault(_rk, null);
         if (isNull(existentM1)) {
-            m1Values.put(_rk, currentM1);
+            m1Values.put(_rk, _rk.getWeight());
             return;
         }
-        float sum = currentM1 + existentM1;
+        float sum = _rk.getWeight() + existentM1;
         m1Values.put(_rk, sum);
     }
 
