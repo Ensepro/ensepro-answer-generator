@@ -4,6 +4,7 @@ public enum MetricPolicy {
 
     WORST_MATCH,
     BEST_MATCH,
-    AVG;
+    AVG,
+    SUM;
 
 }

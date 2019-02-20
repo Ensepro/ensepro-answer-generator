@@ -45,7 +45,10 @@ public class Main {
 
         Collections.sort(answers);
 
-        answers = answers.stream().limit(config.getResultSize()).collect(Collectors.toList());
+        answers = answers.stream()
+            .filter(t -> t.getDetails().getMetrics().getScoreMetrics().get(2) == 1)
+            .limit(config.getResultSize())
+            .collect(Collectors.toList());
 
         JsonUtil.save(config.getSaveFile(),
             JsonAnswers.builder()

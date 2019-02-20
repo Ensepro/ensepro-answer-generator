@@ -85,19 +85,27 @@ public class ScoreCalculation {
 
             helper.getKeywords().stream()
                 .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+                .distinct()
                 .forEach(adjKeyword -> {
+
                     String resource = helper.getVar2resource().get(triple.getPredicate().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (PREDICATE): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
+
                     resource = helper.getVar2resource().get(triple.getSubject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (SUBJECT): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
+
                     resource = helper.getVar2resource().get(triple.getObject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
-                        calculateM1(m1Values, peso_m1, resource, adjKeyword);
+                        log.info("calculando ADJs (OBJECT): {} - {} - {}", resource, adjKeyword);
+                        calculateM1ADJ(m1Values, adjKeyword);
                     }
+
                 });
 
             final Length length = Length.builder()
@@ -114,7 +122,7 @@ public class ScoreCalculation {
         final Float m1 = (float) m1Values.values().stream().mapToDouble(Float::doubleValue).sum();
         final Float m2 = (float) keywords.size() / elements;
         final Float m3 = helper.getProperNouns().size() == 0
-            ? 0
+            ? 1
             : properNouns / (float) helper.getProperNouns().size();
 
         final Float score = m1 + (m2 * peso_m2.getWeight()) + (m3 * peso_m3.getWeight());
@@ -191,6 +199,20 @@ public class ScoreCalculation {
         return true;
     }
 
+
+    private void calculateM1ADJ(final Map<RelevantKeyword, Float> m1Values,
+        final RelevantKeyword _rk) {
+
+        final Float existentM1 = m1Values.getOrDefault(_rk, null);
+        if (isNull(existentM1)) {
+            m1Values.put(_rk, _rk.getWeight());
+            return;
+        }
+        float sum = _rk.getWeight() + existentM1;
+        m1Values.put(_rk, sum);
+    }
+
+
     private void calculateM1(final Map<RelevantKeyword, Float> m1Values, final Metric peso_m1, final String resource,
         final RelevantKeyword _rk) {
         final float currentM1 = _calculateM1(resource, _rk, peso_m1.getWeight());
@@ -214,6 +236,10 @@ public class ScoreCalculation {
             case AVG:
                 float avg = (currentM1 + existentM1) / 2;
                 m1Values.put(_rk, avg);
+                break;
+            case SUM:
+                float sum = currentM1 + existentM1;
+                m1Values.put(_rk, sum);
                 break;
         }
 
