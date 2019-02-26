@@ -93,18 +93,21 @@ public class ScoreCalculation {
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (PREDICATE): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getSubject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (SUBJECT): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getObject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (OBJECT): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                 });
