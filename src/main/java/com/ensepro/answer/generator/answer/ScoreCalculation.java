@@ -8,6 +8,7 @@ import static com.ensepro.answer.generator.domain.Position.PREDICATE;
 import static com.ensepro.answer.generator.domain.Position.SUBJECT;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,7 +176,7 @@ public class ScoreCalculation {
             return;
         }
 
-        final String original_tr = helper.getSynonyms().get(rk.getKeyword());
+        final String original_tr = helper.getSynonyms().getOrDefault(rk.getKeyword(), rk.getKeyword());
         final RelevantKeyword _rk = RelevantKeyword.builder()
             .keyword(original_tr)
             .weight(rk.getWeight())
