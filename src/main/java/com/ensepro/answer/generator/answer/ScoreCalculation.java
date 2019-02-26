@@ -8,6 +8,7 @@ import static com.ensepro.answer.generator.domain.Position.PREDICATE;
 import static com.ensepro.answer.generator.domain.Position.SUBJECT;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,18 +93,21 @@ public class ScoreCalculation {
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (PREDICATE): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getSubject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (SUBJECT): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                     resource = helper.getVar2resource().get(triple.getObject().toString());
                     if (resource.contains(adjKeyword.getKeyword())) {
                         log.info("calculando ADJs (OBJECT): {} - {} - {}", resource, adjKeyword);
                         calculateM1ADJ(m1Values, adjKeyword);
+                        keywords.add(adjKeyword);
                     }
 
                 });
@@ -175,9 +179,17 @@ public class ScoreCalculation {
             return;
         }
 
-        keywords.add(rk);
+        final String original_tr = helper.getSynonyms().getOrDefault(rk.getKeyword(), rk.getKeyword());
+        final RelevantKeyword _rk = RelevantKeyword.builder()
+            .keyword(original_tr)
+            .weight(rk.getWeight())
+            .grammarClass(rk.getGrammarClass()).build();
 
-        calculateM1(m1Values, peso_m1, resource, rk);
+        keywords.add(_rk);
+
+        final Float m1 = calculateM1(m1Values, _rk, peso_m1, resource, rk);
+
+        m1Values.put(_rk, m1);
 
         lengthMatch.put(resource, resource.length());
         lengthKeyword.put(rk.getKeyword(), rk.getKeyword().length());
@@ -213,36 +225,32 @@ public class ScoreCalculation {
     }
 
 
-    private void calculateM1(final Map<RelevantKeyword, Float> m1Values, final Metric peso_m1, final String resource,
+    private Float calculateM1(final Map<RelevantKeyword, Float> m1Values, final RelevantKeyword mapKey, final Metric peso_m1, final String resource,
         final RelevantKeyword _rk) {
         final float currentM1 = _calculateM1(resource, _rk, peso_m1.getWeight());
-        final Float existentM1 = m1Values.getOrDefault(_rk, null);
+        final Float existentM1 = m1Values.getOrDefault(mapKey, null);
+
         if (isNull(existentM1)) {
-            m1Values.put(_rk, currentM1);
-            return;
+            return currentM1;
         }
 
         switch (peso_m1.getPolicy()) {
             case BEST_MATCH:
                 if (currentM1 > existentM1) {
-                    m1Values.put(_rk, currentM1);
+                    return currentM1;
                 }
-                break;
+                return existentM1;
             case WORST_MATCH:
                 if (currentM1 < existentM1) {
-                    m1Values.put(_rk, currentM1);
+                    return currentM1;
                 }
-                break;
+                return existentM1;
             case AVG:
-                float avg = (currentM1 + existentM1) / 2;
-                m1Values.put(_rk, avg);
-                break;
+                return (currentM1 + existentM1) / 2;
             case SUM:
-                float sum = currentM1 + existentM1;
-                m1Values.put(_rk, sum);
-                break;
+                return currentM1 + existentM1;
         }
-
+        return 0F;
     }
 
     /**
