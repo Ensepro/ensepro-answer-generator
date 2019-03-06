@@ -4,6 +4,5 @@ public enum Position {
 
     SUBJECT,
     PREDICATE,
-    OBJECT
-
+    OBJECT;
 }

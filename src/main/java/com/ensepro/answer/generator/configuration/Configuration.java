@@ -1,4 +1,5 @@
-package com.ensepro.answer.generator.config;
+package com.ensepro.answer.generator.configuration;
+
 
 import lombok.Builder;
 import lombok.Getter;

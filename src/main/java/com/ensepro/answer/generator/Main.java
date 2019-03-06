@@ -1,61 +1,65 @@
 package com.ensepro.answer.generator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ensepro.answer.generator.answer.AnswerGenerator;
-import com.ensepro.answer.generator.answer.ScoreCalculation;
-import com.ensepro.answer.generator.config.Configuration;
+import com.ensepro.answer.generator.configuration.Configuration;
+import com.ensepro.answer.generator.data.Answer;
 import com.ensepro.answer.generator.data.Helper;
-import com.ensepro.answer.generator.data.Triples;
-import com.ensepro.answer.generator.data.answer.Answer;
-import com.ensepro.answer.generator.data.normalized.NormalizedJson;
-import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
-import com.ensepro.answer.generator.data.result.JsonAnswers;
+import com.ensepro.answer.generator.data.JavaResult;
+import com.ensepro.answer.generator.data.PythonResult;
+import com.ensepro.answer.generator.mapper.TripleMapper;
 import com.ensepro.answer.generator.utils.JsonUtil;
+import com.ensepro.answer.generator.answer.Score;
+import com.ensepro.answer.generator.data.Triple;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         Configuration config = Configuration.fromArgs(args);
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
         log.info("####################################################################################");
-        NormalizedJson json = JsonUtil.read(config.getLoadFile(), NormalizedJson.class);
 
-        Helper helper = Helper.fromNormalizedHelper(json.getHelper());
-        Triples triples = Triples.fromNormalizedValues(json.getValues());
+        PythonResult pythonResult = JsonUtil.read2(config.getLoadFile(), PythonResult.class);
 
-        AnswerGenerator generator = AnswerGenerator.builder()
-            .helper(helper)
+        List<Triple> triples = new TripleMapper().map(pythonResult.getTriples());
+        Helper helper = pythonResult.getHelper();
+
+        Score score = Score.builder()
             .triples(triples)
-            .level(config.getLevel())
-            .threads(config.getThreads())
-            .scoreCalculator(ScoreCalculation.builder()
-                .helper(helper)
-                .build())
+            .helper(helper)
+            .config(config)
             .build();
 
-        List<Answer> answers = generator.execute();
+        score.calculate();
+
+        AnswerGenerator answerGenerator = AnswerGenerator.builder()
+            .triples(triples)
+            .helper(helper)
+            .build();
+
+        List<Answer> answers = new ArrayList<>();
+        answers.addAll(answerGenerator.generateL1());
+        answers.addAll(answerGenerator.generateL2());
 
         Collections.sort(answers);
 
         answers = answers.stream()
-            .filter(t -> t.getDetails().getMetrics().getScoreMetrics().get(2) == 1)
             .limit(config.getResultSize())
             .collect(Collectors.toList());
 
         JsonUtil.save(config.getSaveFile(),
-            JsonAnswers.builder()
+            JavaResult.builder()
                 .answers(answers)
-                .helper(NormalizedJsonHelper.fromHelper(helper))
+                .helper(helper)
                 .build()
         );
-
     }
 }
