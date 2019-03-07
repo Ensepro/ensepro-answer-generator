@@ -3,8 +3,11 @@ package com.ensepro.answer.generator;
 import static java.util.Arrays.asList;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
+import com.ensepro.answer.generator.configuration.Configuration;
 import com.ensepro.answer.generator.data.Answer;
 import com.ensepro.answer.generator.data.Helper;
 import com.ensepro.answer.generator.mapper.AnswerMapper;
@@ -19,25 +22,31 @@ import lombok.extern.slf4j.Slf4j;
 public class AnswerGenerator {
 
     private final Helper helper;
+    private final Configuration config;
     private final List<Triple> triples;
 
-    public List<Answer> generateL1() {
+    public List<Answer> generateL1() throws ExecutionException, InterruptedException {
         final AnswerMapper mapper = new AnswerMapper(helper);
-        return triples.parallelStream()
+
+        final ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
+
+        return threadPool.submit(() -> triples.parallelStream()
             .map(mapper::fromTriple)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())).get();
     }
 
-    public List<Answer> generateL2() {
+    public List<Answer> generateL2() throws ExecutionException, InterruptedException {
         final AnswerMapper mapper = new AnswerMapper(helper);
         final AnswerL2Validator validator = new AnswerL2Validator();
 
-        return triples.parallelStream()
+        ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
+
+        return threadPool.submit(() -> triples.parallelStream()
             .map(this::createPairWithOther)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())).get();
     }
 
     private List<List<Triple>> createPairWithOther(final Triple triple1) {

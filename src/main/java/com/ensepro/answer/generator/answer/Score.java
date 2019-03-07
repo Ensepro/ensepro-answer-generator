@@ -43,7 +43,7 @@ public class Score {
     }
 
     public void calculate() {
-        this.triples.forEach(this::calculate);
+        this.triples.parallelStream().forEach(this::calculate);
     }
 
     private void calculate(final Triple triple) {
@@ -74,11 +74,14 @@ public class Score {
             .m1(m1)
             .m2(m2)
             .m3(m3)
+            .m1Values(m1Values)
             .build();
 
         TripleDetail detail = TripleDetail.builder()
             .keywords(new ArrayList<>(keywords))
             .scoreDetail(scoreDetail)
+            .properNounsCount(helper.getProperNouns().size())
+            .properNounsMatchedCount(properNouns.intValue())
             .build();
 
         triple.setDetail(detail);
@@ -124,7 +127,7 @@ public class Score {
         final String resource = helper.getVar2resource().get(resourceId.toString());
         final Keyword keyword = helper.getResource2keyword().get(resource);
 
-        if (!positionValidator.validate(position, keyword.getGrammarClass())) {
+        if (keyword == null || !positionValidator.validate(position, keyword.getGrammarClass())) {
             return;
         }
 

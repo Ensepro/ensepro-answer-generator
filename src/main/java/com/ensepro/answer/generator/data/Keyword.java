@@ -55,4 +55,9 @@ public class Keyword implements Comparable<Keyword> {
     public int compareTo(final Keyword other) {
         return other.weight.compareTo(this.weight);
     }
+
+    @Override
+    public String toString() {
+        return keyword;
+    }
 }

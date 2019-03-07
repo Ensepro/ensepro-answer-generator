@@ -1,9 +1,11 @@
 package com.ensepro.answer.generator;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.ensepro.answer.generator.configuration.Configuration;
@@ -21,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         Configuration config = Configuration.fromArgs(args);
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
@@ -38,18 +40,32 @@ public class Main {
             .config(config)
             .build();
 
+        log.info("#### CALCULATING SCORE FOR L1:  size={}", triples.size());
         score.calculate();
+        log.info("#### CALCULATING SCORE FOR L1 - DONE", triples.size());
 
         AnswerGenerator answerGenerator = AnswerGenerator.builder()
             .triples(triples)
             .helper(helper)
+            .config(config)
             .build();
 
-        List<Answer> answers = new ArrayList<>();
-        answers.addAll(answerGenerator.generateL1());
-        answers.addAll(answerGenerator.generateL2());
+        log.info("### Generating answer for L1");
+        List<Answer> answersL1 = answerGenerator.generateL1();
+        log.info("### Generating answer for L1 - DONE - size={}", answersL1.size());
 
+        List<Answer> answers = answersL1;
+
+        if (config.getLevel() > 1) {
+            log.info("### Generating answer for L2");
+            List<Answer> answersL2 = answerGenerator.generateL2();
+            log.info("### Generating answer for L2 - DONE - size={}", answersL2.size());
+            answers.addAll(answersL2);
+        }
+
+        log.info("### Sorting answers");
         Collections.sort(answers);
+        log.info("### Sorting answers");
 
         answers = answers.stream()
             .limit(config.getResultSize())
