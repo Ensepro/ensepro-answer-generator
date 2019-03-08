@@ -56,19 +56,19 @@ public class AnswerMapper {
 
         final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
         final Float m1 = (float) finalM1Values.values().stream().mapToDouble(Float::doubleValue).sum();
-        final Float m2 = (float) keywords.size() / 3F * triples.size();
+        final Float m2 = keywords.size() / (3F * triples.size());
         final Float m3 = helper.getProperNouns().size() == 0 ? 0 : properNouns / helper.getProperNouns().size();
 
         final Float score = (m1 * metricM1.getWeight()) + (m2 * metricM2.getWeight()) + (m3 * metricM3.getWeight());
 
-        ScoreDetail scoreDetail = ScoreDetail.builder()
+        final ScoreDetail scoreDetail = ScoreDetail.builder()
             .m1(m1)
             .m2(m2)
             .m3(m3)
             .m1Values(finalM1Values)
             .build();
 
-        TripleDetail tripleDetail = TripleDetail.builder()
+        final TripleDetail tripleDetail = TripleDetail.builder()
             .keywords(new ArrayList<>(keywords))
             .scoreDetail(scoreDetail)
             .properNounsCount(helper.getProperNouns().size())
