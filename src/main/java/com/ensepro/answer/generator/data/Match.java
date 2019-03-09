@@ -1,7 +1,5 @@
 package com.ensepro.answer.generator.data;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;

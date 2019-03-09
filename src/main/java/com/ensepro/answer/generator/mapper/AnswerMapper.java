@@ -18,6 +18,7 @@ import com.ensepro.answer.generator.data.Metric;
 import com.ensepro.answer.generator.data.ScoreDetail;
 import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.data.TripleDetail;
+import com.ensepro.answer.generator.domain.GrammarClass;
 
 import lombok.AllArgsConstructor;
 
@@ -45,7 +46,6 @@ public class AnswerMapper {
             .map(Triple::getDetail)
             .map(TripleDetail::getListKeywords)
             .flatMap(List::stream)
-            .sorted()    // makes sure the highest weight are first
             .distinct()// so here the distinct will always keep the first element
             .collect(Collectors.toList());
 
@@ -55,7 +55,8 @@ public class AnswerMapper {
             .map(ScoreDetail::getMatches)
             .forEach(matches -> mergeMatches(finalMatches, matches));
 
-        final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
+        final Float properNouns = (float) keywords.stream().map(Keyword::getGrammarClass).filter(GrammarClass::isProp)
+            .count();
         final Float m1 =
             (float) finalMatches.values().stream().map(Match::getScore).mapToDouble(Float::doubleValue).sum()
                 * weightM1;
@@ -74,7 +75,7 @@ public class AnswerMapper {
 
         final TripleDetail tripleDetail = TripleDetail.builder()
             .listKeywords(new ArrayList<>(keywords))
-            .keywords(keywords.stream().map(Keyword::getKeyword).collect(Collectors.toList()))
+            .keywords(keywords.stream().map(Keyword::getKeyword).distinct().collect(Collectors.toList()))
             .scoreDetail(scoreDetail)
             .properNounsCount(helper.getProperNouns().size())
             .properNounsMatchedCount(properNouns.intValue())
