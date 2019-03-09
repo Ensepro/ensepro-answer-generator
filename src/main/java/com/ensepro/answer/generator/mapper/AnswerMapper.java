@@ -1,5 +1,6 @@
 package com.ensepro.answer.generator.mapper;
 
+import static com.ensepro.answer.generator.domain.GrammarClass.ADJ;
 import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static java.util.Collections.singletonList;
 
@@ -52,13 +53,13 @@ public class AnswerMapper {
             .map(Triple::getDetail)
             .map(TripleDetail::getScoreDetail)
             .map(ScoreDetail::getMatches)
-            .forEach(m1Values -> merge(finalMatches, m1Values));
+            .forEach(matches -> mergeMatches(finalMatches, matches));
 
         final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
         final Float m1 =
             (float) finalMatches.values().stream().map(Match::getScore).mapToDouble(Float::doubleValue).sum()
                 * weightM1;
-        final Float m2 = (keywords.size() / 3F * triples.size()) * weightM2;
+        final Float m2 = (keywords.size() / (3F * triples.size())) * weightM2;
         final Float m3 = helper.getProperNouns().size() == 0
             ? 0
             : (properNouns / helper.getProperNouns().size()) * weightM3;
@@ -86,7 +87,7 @@ public class AnswerMapper {
             .build();
     }
 
-    private void merge(final Map<Keyword, Match> finalMatches, final Map<Keyword, Match> matches) {
+    private void mergeMatches(final Map<Keyword, Match> finalMatches, final Map<Keyword, Match> matches) {
         matches.forEach((keyword, match) -> {
             final Match currentScore = finalMatches.get(keyword);
             if (currentScore == null) {
@@ -99,6 +100,10 @@ public class AnswerMapper {
     }
 
     private Match getScoreBasedInPolicy(final Match currentScore, final Match match) {
+        if (currentScore.getKeyword().getGrammarClass().isAdj()) {
+            return currentScore;
+        }
+
         //TODO maybe move this logic to a Map<Policy, Function> its going to be better
         switch (helper.getMetrics().get(Metric.M1_KEY).getPolicy()) {
             case BEST_MATCH:
@@ -123,7 +128,10 @@ public class AnswerMapper {
                     .resource(currentScore.getResource() + "|sum|" + match.getResource())
                     .score(currentScore.getScore() + match.getScore())
                     .build();
+            default:
+                //if no metrics exists, use the first one
+                return currentScore;
+
         }
-        return currentScore;
     }
 }

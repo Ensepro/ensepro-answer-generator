@@ -62,7 +62,11 @@ public class Score {
 
         calculateForAdj(triple, keywords, matches);
 
-        final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
+        final Float properNouns = (float) keywords.stream()
+            .map(Keyword::getGrammarClass)
+            .filter(GrammarClass::isProp)
+            .count();
+
         final Float m1 =
             (float) matches.values().stream().map(Match::getScore).mapToDouble(Float::doubleValue).sum() * weightM1;
         final Float m2 = (keywords.size() / 3F) * weightM2;
@@ -95,7 +99,7 @@ public class Score {
 
     private void calculateForAdj(final Triple triple, final Set<Keyword> keywords, final Map<Keyword, Match> matches) {
         helper.getRelevantKeywords().stream()
-            .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
+            .filter(keyword -> keyword.getGrammarClass().isAdj())
             .forEach(adjKeyword -> {
 
                 final String subject = helper.getVar2resource().get(triple.getSubject().toString());
@@ -128,9 +132,13 @@ public class Score {
             return;
         }
 
+        if (currentValue.getResource().equals(resource)) {
+            return;
+        }
+
         matches.put(adjKeyword, Match.builder()
             .keyword(adjKeyword)
-            .resource(currentValue.getResource() + "|sum|" + resource)
+            .resource(currentValue.getResource() + "|adj-sum|" + resource)
             .score(currentValue.getScore() + adjKeyword.getWeight())
             .build());
     }
@@ -193,10 +201,11 @@ public class Score {
                     .resource(currentScore.getResource() + "|sum|" + newMatch.getResource())
                     .score(currentScore.getScore() + score)
                     .build();
+            default:
+                //if no metrics exists, use the first one
+                return currentScore;
         }
-        return currentScore;
     }
-
 
     private float m1Score(final String resource, final Keyword keyword) {
         float keywordLength = keyword.getKeyword().length();
