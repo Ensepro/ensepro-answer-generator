@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.ensepro.answer.generator.configuration.Configuration;
 import com.ensepro.answer.generator.data.Helper;
 import com.ensepro.answer.generator.data.Keyword;
+import com.ensepro.answer.generator.data.Match;
 import com.ensepro.answer.generator.data.Metric;
 import com.ensepro.answer.generator.data.ScoreDetail;
 import com.ensepro.answer.generator.data.Triple;
@@ -48,37 +50,40 @@ public class Score {
 
     private void calculate(final Triple triple) {
         final Set<Keyword> keywords = new HashSet<>();
-        final Map<Keyword, Float> m1Values = new HashMap<>();
+        final Map<Keyword, Match> matches = new HashMap<>();
 
-        final Metric metricM1 = helper.getMetrics().get(Metric.M1_KEY);
-        final Metric metricM2 = helper.getMetrics().get(Metric.M2_KEY);
-        final Metric metricM3 = helper.getMetrics().get(Metric.M3_KEY);
+        final Float weightM1 = helper.getMetrics().get(Metric.M1_KEY).getWeight();
+        final Float weightM2 = helper.getMetrics().get(Metric.M2_KEY).getWeight();
+        final Float weightM3 = helper.getMetrics().get(Metric.M3_KEY).getWeight();
 
-        calculateFor(triple.getSubject(), Position.SUBJECT, keywords, m1Values);
-        calculateFor(triple.getPredicate(), Position.PREDICATE, keywords, m1Values);
-        calculateFor(triple.getObject(), Position.OBJECT, keywords, m1Values);
+        calculateFor(triple.getSubject(), Position.SUBJECT, keywords, matches);
+        calculateFor(triple.getPredicate(), Position.PREDICATE, keywords, matches);
+        calculateFor(triple.getObject(), Position.OBJECT, keywords, matches);
 
-        calculateForAdj(triple, keywords, m1Values);
+        calculateForAdj(triple, keywords, matches);
 
         final Float properNouns = (float) keywords.stream().filter(tr -> PROP.equals(tr.getGrammarClass())).count();
+        final Float m1 =
+            (float) matches.values().stream().map(Match::getScore).mapToDouble(Float::doubleValue).sum() * weightM1;
+        final Float m2 = (keywords.size() / 3F) * weightM2;
+        final Float m3 = helper.getProperNouns().size() == 0
+            ? 0
+            : (properNouns / helper.getProperNouns().size()) * weightM3;
 
-        final Float m1 = (float) m1Values.values().stream().mapToDouble(Float::doubleValue).sum();
-        final Float m2 = (float) keywords.size() / 3F; //3F because at this moment we have 1 triple
-        final Float m3 = helper.getProperNouns().size() == 0 ? 0 : properNouns / helper.getProperNouns().size();
-
-        final Float score = (m1 * metricM1.getWeight()) + (m2 * metricM2.getWeight()) + (m3 * metricM3.getWeight());
+        final Float score = m1 + m2 + m3;
 
         triple.setScore(score);
 
-        ScoreDetail scoreDetail = ScoreDetail.builder()
+        final ScoreDetail scoreDetail = ScoreDetail.builder()
             .m1(m1)
             .m2(m2)
             .m3(m3)
-            .m1Values(m1Values)
+            .matches(matches)
             .build();
 
-        TripleDetail detail = TripleDetail.builder()
-            .keywords(new ArrayList<>(keywords))
+        final TripleDetail detail = TripleDetail.builder()
+            .listKeywords(new ArrayList<>(keywords))
+            .keywords(keywords.stream().map(Keyword::getKeyword).collect(Collectors.toList()))
             .scoreDetail(scoreDetail)
             .properNounsCount(helper.getProperNouns().size())
             .properNounsMatchedCount(properNouns.intValue())
@@ -88,8 +93,7 @@ public class Score {
 
     }
 
-    private void calculateForAdj(final Triple triple,
-        final Set<Keyword> keywords, final Map<Keyword, Float> m1Values) {
+    private void calculateForAdj(final Triple triple, final Set<Keyword> keywords, final Map<Keyword, Match> matches) {
         helper.getRelevantKeywords().stream()
             .filter(keyword -> GrammarClass.ADJ.equals(keyword.getGrammarClass()))
             .forEach(adjKeyword -> {
@@ -99,30 +103,43 @@ public class Score {
                 final String object = helper.getVar2resource().get(triple.getObject().toString());
 
                 if (subject.contains(adjKeyword.getKeyword())) {
-                    calculateAdjScore(m1Values, adjKeyword);
+                    calculateAdjScore(matches, adjKeyword, subject);
                     keywords.add(adjKeyword);
                 }
                 if (predicate.contains(adjKeyword.getKeyword())) {
-                    calculateAdjScore(m1Values, adjKeyword);
+                    calculateAdjScore(matches, adjKeyword, predicate);
                     keywords.add(adjKeyword);
                 }
                 if (object.contains(adjKeyword.getKeyword())) {
-                    calculateAdjScore(m1Values, adjKeyword);
+                    calculateAdjScore(matches, adjKeyword, object);
                     keywords.add(adjKeyword);
                 }
             });
     }
 
-    private void calculateAdjScore(final Map<Keyword, Float> m1Values, final Keyword adjKeyword) {
-        final float currentValue = m1Values.getOrDefault(adjKeyword, 0F);
-        m1Values.put(adjKeyword, currentValue + adjKeyword.getWeight());
+    private void calculateAdjScore(final Map<Keyword, Match> matches, final Keyword adjKeyword, final String resource) {
+        final Match currentValue = matches.get(adjKeyword);
+        if (currentValue == null) {
+            matches.put(adjKeyword, Match.builder()
+                .keyword(adjKeyword)
+                .resource(resource)
+                .score(adjKeyword.getWeight())
+                .build());
+            return;
+        }
+
+        matches.put(adjKeyword, Match.builder()
+            .keyword(adjKeyword)
+            .resource(currentValue.getResource() + "|sum|" + resource)
+            .score(currentValue.getScore() + adjKeyword.getWeight())
+            .build());
     }
 
     private void calculateFor(
         final Integer resourceId,
         final Position position,
         final Set<Keyword> keywords,
-        final Map<Keyword, Float> m1Values) {
+        final Map<Keyword, Match> matches) {
 
         final String resource = helper.getVar2resource().get(resourceId.toString());
         final Keyword keyword = helper.getResource2keyword().get(resource);
@@ -135,40 +152,49 @@ public class Score {
         final Keyword m1Key = keyword.clone();
         m1Key.setKeyword(originalTR);
 
-        final float m1Score = calculateM1score(resource, keyword, m1Values.get(m1Key));
+        final Match match = calculateM1score(resource, keyword, matches.get(m1Key));
 
-        m1Values.put(m1Key, m1Score);
         keywords.add(m1Key);
+        matches.put(m1Key, match);
     }
 
-    private float calculateM1score(
+    private Match calculateM1score(
         final String resource,
         final Keyword keyword,
-        final Float currentScore) {
+        final Match currentScore) {
 
-        final float newScore = m1Score(resource, keyword);
+        final float score = m1Score(resource, keyword);
+        final Match newMatch = Match.builder().keyword(keyword).resource(resource).score(score).build();
 
         if (currentScore == null) {
-            return newScore;
+            return newMatch;
         }
 
         switch (helper.getMetrics().get(Metric.M1_KEY).getPolicy()) {
             case BEST_MATCH:
-                if (currentScore > newScore) {
+                if (currentScore.getScore() > score) {
                     return currentScore;
                 }
-                return newScore;
+                return newMatch;
             case WORST_MATCH:
-                if (currentScore < newScore) {
+                if (currentScore.getScore() < score) {
                     return currentScore;
                 }
-                return newScore;
+                return newMatch;
             case AVG:
-                return (currentScore + newScore) / 2;
+                return Match.builder()
+                    .keyword(keyword)
+                    .resource(currentScore.getResource() + "|avg|" + newMatch.getResource())
+                    .score((currentScore.getScore() + score) / 2)
+                    .build();
             case SUM:
-                return currentScore + newScore;
+                return Match.builder()
+                    .keyword(keyword)
+                    .resource(currentScore.getResource() + "|sum|" + newMatch.getResource())
+                    .score(currentScore.getScore() + score)
+                    .build();
         }
-        return 0;
+        return currentScore;
     }
 
 

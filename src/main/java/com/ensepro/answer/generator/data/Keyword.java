@@ -43,7 +43,7 @@ public class Keyword implements Comparable<Keyword> {
             return false;
         }
         final Keyword keyword1 = (Keyword) o;
-        return Objects.equals(keyword, keyword1.keyword);
+        return keyword.equals(keyword1.keyword);
     }
 
     @Override
