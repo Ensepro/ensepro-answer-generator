@@ -23,4 +23,7 @@ public class PythonResult {
     @JsonProperty("helper")
     private Helper helper;
 
+    @JsonProperty("frase")
+    private String phrase;
+
 }

@@ -25,13 +25,14 @@ public class Main {
         Configuration config = Configuration.fromArgs(args);
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
-        log.info("####################################################################################");
 
         final PythonResult pythonResult = JsonUtil.read2(config.getLoadFile(), PythonResult.class);
 
         final List<Triple> triples = new TripleMapper().map(pythonResult.getTriples());
         final Helper helper = pythonResult.getHelper();
 
+        log.info("##### phrase: {} ", pythonResult.getPhrase());
+        log.info("####################################################################################");
         final Score score = Score.builder()
             .triples(triples)
             .helper(helper)
