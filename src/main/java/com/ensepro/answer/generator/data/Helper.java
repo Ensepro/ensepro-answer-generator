@@ -1,69 +1,42 @@
 package com.ensepro.answer.generator.data;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ensepro.answer.generator.data.normalized.NormalizedJsonHelper;
-import com.ensepro.answer.generator.domain.GrammarClass;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Helper {
 
-    private final Map<String, Integer> resource2var;
-    private final Map<String, String> var2resource;
-    private final Map<String, RelevantKeyword> resource2keyword;
+    @JsonProperty("map_resource_to_var")
+    private Map<String, Integer> resource2var;
 
-    @Singular
-    private final List<RelevantKeyword> keywords;
-    private final Map<String, String> synonyms;
-    private final List<String> properNouns;
-    private final Map<String, Metric> metrics;
+    @JsonProperty("map_var_to_resource")
+    private Map<String, String> var2resource;
 
+    @JsonProperty("map_resource_to_tr")
+    private Map<String, Keyword> resource2keyword;
 
-    public static Helper fromNormalizedHelper(NormalizedJsonHelper normalizedJsonHelper) {
-        HelperBuilder helper = Helper.builder();
+    @JsonProperty("termos_relevantes")
+    private List<Keyword> relevantKeywords;
 
-        final Map<String, RelevantKeyword> resource2keyword = new HashMap<>();
-        final Map<String, Metric> metrics = new HashMap<>();
+    @JsonProperty("sinonimos")
+    private Map<String, String> synonyms;
 
-        normalizedJsonHelper.getMap_resource_to_tr().forEach((key, value) -> {
-            resource2keyword.put(key, RelevantKeyword.builder()
-                .keyword(value.get(0).toString())
-                .weight(Float.valueOf(value.get(1).toString()))
-                .grammarClass(GrammarClass.valueOf(value.get(2).toString()))
-                .build());
-        });
+    @JsonProperty("substantivos_proprios_frase")
+    private List<String> properNouns;
 
-        normalizedJsonHelper.getTermos_relevantes().forEach(termo -> {
-            helper.keyword(RelevantKeyword.builder()
-                .keyword(termo.get(0).toString())
-                .weight(Float.valueOf(termo.get(1).toString()))
-                .grammarClass(GrammarClass.valueOf(termo.get(2).toString()))
-                .build());
-        });
-
-        normalizedJsonHelper.getMetricas().forEach((key, value) ->
-            metrics.put(key, Metric.builder()
-                .weight(value.getPeso())
-                .policy(value.getPolicy())
-                .build())
-        );
-
-        helper.resource2var(normalizedJsonHelper.getMap_resource_to_var());
-        helper.var2resource(normalizedJsonHelper.getMap_var_to_resource());
-        helper.resource2keyword(resource2keyword);
-        helper.synonyms(normalizedJsonHelper.getSinonimos());
-        helper.properNouns(normalizedJsonHelper.getSubstantivos_proprios_frase());
-        helper.metrics(metrics);
-
-        return helper.build();
-    }
-
+    @JsonProperty("metricas")
+    private Map<String, Metric> metrics;
 
 }

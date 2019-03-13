@@ -21,6 +21,11 @@ public final class JsonUtil {
         return gson.fromJson(br, clazz);
     }
 
+    public static <T> T read2(String path, Class<T> clazz) throws IOException {
+        final File file = new File(path);
+        return mapper.readValue(file, clazz);
+    }
+
     public static void save(String file, Object obj) throws IOException {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(new File(file), obj);
