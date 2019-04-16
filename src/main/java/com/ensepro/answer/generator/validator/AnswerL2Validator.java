@@ -26,6 +26,10 @@ public class AnswerL2Validator {
         subject_igual_object = triple1.getSubject().equals(triple2.getObject())
             || triple2.getSubject().equals(triple1.getObject());
 
+        if (subject_igual && predicate_igual && object_igual) {
+            return false;
+        }
+
         if (subject_igual && predicate_diferente && object_diferente) {
             return true;
         }
