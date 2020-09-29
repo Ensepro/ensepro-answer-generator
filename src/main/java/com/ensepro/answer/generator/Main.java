@@ -1,10 +1,12 @@
 package com.ensepro.answer.generator;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import com.ensepro.answer.generator.answer.Score;
 import com.ensepro.answer.generator.configuration.Configuration;
@@ -28,7 +30,7 @@ public class Main {
 
         final PythonResult pythonResult = JsonUtil.read2(config.getLoadFile(), PythonResult.class);
 
-        final List<Triple> triples = new TripleMapper().map(pythonResult.getTriples());
+        List<Triple> triples = new TripleMapper().map(pythonResult.getTriples());
         final Helper helper = pythonResult.getHelper();
 
         log.info("##### phrase: {} ", pythonResult.getPhrase());
@@ -41,34 +43,34 @@ public class Main {
 
         log.info("#### CALCULATING SCORE FOR L1:  size={}", triples.size());
         score.calculate();
-        log.info("#### CALCULATING SCORE FOR L1 - DONE", triples.size());
+        log.info("#### CALCULATING SCORE FOR L1 - DONE");
 
         final AnswerGenerator answerGenerator = AnswerGenerator.builder()
-            .triples(triples)
+//            .triples(triples)
             .helper(helper)
             .config(config)
             .build();
 
-        log.info("### Generating answer for L1");
-        final List<Answer> answersL1 = answerGenerator.generateL1();
-        log.info("### Generating answer for L1 - DONE - size={}", answersL1.size());
+        List<Answer> answers = new ArrayList<>();
+        for (int i = 0; i < config.getLevel(); i++) {
+            log.info("### Generating answer for L" + (i + 1));
 
-        List<Answer> answers = answersL1;
+            final List<Answer> answersGenerated = answerGenerator.generate(i + 1, triples);
+            Collections.sort(answersGenerated);
 
-        if (config.getLevel() > 1) {
-            log.info("### Generating answer for L2");
-            final List<Answer> answersL2 = answerGenerator.generateL2();
-            log.info("### Generating answer for L2 - DONE - size={}", answersL2.size());
-            answers.addAll(answersL2);
+            triples = answersGenerated.stream()
+                .limit(config.getUseLnXAnswerToNextLn())
+                .map(Answer::getOriginalTriples)
+                .flatMap(List::stream)
+                .distinct()
+                .collect(toList());
+
+            answers.addAll(answersGenerated);
+            log.info("### Generating answer for L" + (i + 1) + " - DONE - size={}", answers.size());
         }
 
-        log.info("### Sorting answers");
         Collections.sort(answers);
-        log.info("### Sorting answers");
-
-        answers = answers.stream()
-            .limit(config.getResultSize())
-            .collect(Collectors.toList());
+        answers = answers.stream().limit(config.getResultSize()).collect(toList());
 
         JsonUtil.save(config.getSaveFile(),
             JavaResult.builder()

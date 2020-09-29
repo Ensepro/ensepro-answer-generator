@@ -1,6 +1,5 @@
 package com.ensepro.answer.generator.configuration;
 
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,19 +9,23 @@ import lombok.ToString;
 @ToString
 public class Configuration {
 
-    private static final String DEFAULT_LOAD_FILE = "resultado_normalizado.json";
+    private static final String DEFAULT_LOAD_FILE = "C:\\_ensepro\\ensepro-core\\main\\resultado_normalizado.json";
+//    private static final String DEFAULT_SAVE_FILE = "C:\\_ensepro\\ensepro-core\\main\\queries_renqueadas.json";
     private static final String DEFAULT_SAVE_FILE = "queries_renqueadas.json";
     private static final Integer DEFAULT_LEVEL = 2;
     private static final Integer DEFAULT_RESULT_SIZE = 10;
+
 
     private final String loadFile;
     private final String saveFile;
     private final Integer threads;
     private final Integer level; //2 - combination of 2 triples. 3 - combination of 3 triples.
     private final Integer resultSize;
+    private final Integer useLnXAnswerToNextLn = 100;
 
     private static ConfigurationBuilder getDefaultBuilder() {
         return Configuration.builder()
+            .threads(8)
             .loadFile(DEFAULT_LOAD_FILE)
             .saveFile(DEFAULT_SAVE_FILE)
             .level(DEFAULT_LEVEL)

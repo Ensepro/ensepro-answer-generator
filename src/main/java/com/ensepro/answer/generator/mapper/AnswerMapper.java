@@ -1,7 +1,5 @@
 package com.ensepro.answer.generator.mapper;
 
-import static com.ensepro.answer.generator.domain.GrammarClass.ADJ;
-import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
@@ -21,7 +19,9 @@ import com.ensepro.answer.generator.data.TripleDetail;
 import com.ensepro.answer.generator.domain.GrammarClass;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 public class AnswerMapper {
 
@@ -32,6 +32,7 @@ public class AnswerMapper {
             .triples(singletonList(triple.getTriple()))
             .score(triple.getScore())
             .detail(triple.getDetail())
+            .originalTriple(triple)
             .build();
     }
 
@@ -81,11 +82,16 @@ public class AnswerMapper {
             .properNounsMatchedCount(properNouns.intValue())
             .build();
 
-        return Answer.builder()
+
+        final Answer answer = Answer.builder()
             .triples(triples.stream().map(Triple::getTriple).collect(Collectors.toList()))
             .detail(tripleDetail)
             .score(score)
+            .originalTriples(triples)
             .build();
+
+//        log.info("Answer calculated: {}", answer);
+        return answer;
     }
 
     private void mergeMatches(final Map<Keyword, Match> finalMatches, final Map<Keyword, Match> matches) {
