@@ -50,7 +50,7 @@ public class Main {
             .helper(helper)
             .config(config)
             .build();
-
+        JavaResult.JavaResultBuilder resultBuilder = JavaResult.builder();
         List<Answer> answers = new ArrayList<>();
         for (int i = 0; i < config.getLevel(); i++) {
             log.info("### Generating answer for L" + (i + 1));
@@ -65,15 +65,17 @@ public class Main {
                 .distinct()
                 .collect(toList());
 
+            resultBuilder.l_size(answersGenerated.size());
             answers.addAll(answersGenerated);
-            log.info("### Generating answer for L" + (i + 1) + " - DONE - size={}", answers.size());
+
+            log.info("### Generating answer for L" + (i + 1) + " - DONE - size={}", answersGenerated.size());
         }
 
         Collections.sort(answers);
         answers = answers.stream().limit(config.getResultSize()).collect(toList());
 
         JsonUtil.save(config.getSaveFile(),
-            JavaResult.builder()
+                resultBuilder
                 .answers(answers)
                 .helper(helper)
                 .build()

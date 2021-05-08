@@ -21,7 +21,7 @@ public class Configuration {
     private final Integer threads;
     private final Integer level; //2 - combination of 2 triples. 3 - combination of 3 triples.
     private final Integer resultSize;
-    private final Integer useLnXAnswerToNextLn = 100;
+    private final Integer useLnXAnswerToNextLn = 1000;
 
     private static ConfigurationBuilder getDefaultBuilder() {
         return Configuration.builder()
