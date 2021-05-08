@@ -1,22 +1,21 @@
 package com.ensepro.answer.generator;
 
+import com.ensepro.answer.generator.answer.Score;
+import com.ensepro.answer.generator.configuration.Configuration;
+import com.ensepro.answer.generator.data.Answer;
+import com.ensepro.answer.generator.data.JavaResult;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.PythonResult;
+import com.ensepro.answer.generator.data.Triple;
+import com.ensepro.answer.generator.mapper.TripleMapper;
+import com.ensepro.answer.generator.utils.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import com.ensepro.answer.generator.answer.Score;
-import com.ensepro.answer.generator.configuration.Configuration;
-import com.ensepro.answer.generator.data.Answer;
-import com.ensepro.answer.generator.data.Helper;
-import com.ensepro.answer.generator.data.JavaResult;
-import com.ensepro.answer.generator.data.PythonResult;
-import com.ensepro.answer.generator.data.Triple;
-import com.ensepro.answer.generator.mapper.TripleMapper;
-import com.ensepro.answer.generator.utils.JsonUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Main {
@@ -25,7 +24,7 @@ public class Main {
         Configuration config = Configuration.fromArgs(args);
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
-
+        JavaResult.JavaResultBuilder resultBuilder = JavaResult.builder();
         final PythonResult pythonResult = JsonUtil.read2(config.getLoadFile(), PythonResult.class);
 
         final List<Triple> triples = new TripleMapper().map(pythonResult.getTriples());
@@ -52,14 +51,15 @@ public class Main {
         log.info("### Generating answer for L1");
         final List<Answer> answersL1 = answerGenerator.generateL1();
         log.info("### Generating answer for L1 - DONE - size={}", answersL1.size());
+        resultBuilder.l_size(answersL1.size());
 
         List<Answer> answers = answersL1;
-
         if (config.getLevel() > 1) {
             log.info("### Generating answer for L2");
             final List<Answer> answersL2 = answerGenerator.generateL2();
             log.info("### Generating answer for L2 - DONE - size={}", answersL2.size());
             answers.addAll(answersL2);
+            resultBuilder.l_size(answersL2.size());
         }
 
         log.info("### Sorting answers");
@@ -71,7 +71,7 @@ public class Main {
             .collect(Collectors.toList());
 
         JsonUtil.save(config.getSaveFile(),
-            JavaResult.builder()
+                resultBuilder
                 .answers(answers)
                 .helper(helper)
                 .build()
