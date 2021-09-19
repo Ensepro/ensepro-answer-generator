@@ -14,6 +14,9 @@ public class Configuration {
     private static final String DEFAULT_SAVE_FILE = "queries_renqueadas.json";
     private static final Integer DEFAULT_LEVEL = 2;
     private static final Integer DEFAULT_RESULT_SIZE = 10;
+    private static final Integer DEFAULT_SLM1_FACTOR = 500;
+    private static final boolean  DEFAULT_SLM1_ONLY_L1 = true;
+
 
 
     private final String loadFile;
@@ -21,7 +24,8 @@ public class Configuration {
     private final Integer threads;
     private final Integer level; //2 - combination of 2 triples. 3 - combination of 3 triples.
     private final Integer resultSize;
-    private final Integer useLnXAnswerToNextLn = 1000;
+    private final Integer slm1Factor;
+    private final Boolean slm1OnlyL1;
 
     private static ConfigurationBuilder getDefaultBuilder() {
         return Configuration.builder()
@@ -29,7 +33,9 @@ public class Configuration {
             .loadFile(DEFAULT_LOAD_FILE)
             .saveFile(DEFAULT_SAVE_FILE)
             .level(DEFAULT_LEVEL)
-            .resultSize(DEFAULT_RESULT_SIZE);
+            .resultSize(DEFAULT_RESULT_SIZE)
+            .slm1Factor(DEFAULT_SLM1_FACTOR)
+            .slm1OnlyL1(DEFAULT_SLM1_ONLY_L1);
 
     }
 
@@ -54,6 +60,14 @@ public class Configuration {
 
         if (args.length > 3) {
             config.level(Integer.valueOf(args[3]));
+        }
+
+        if(args.length > 4){
+            config.slm1Factor(Integer.valueOf(args[4]));
+        }
+
+        if(args.length > 5){
+            config.slm1OnlyL1(args[4].equals("true"));
         }
 
         return config.build();

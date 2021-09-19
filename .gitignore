@@ -25,4 +25,3 @@ nbdist/
 .nb-gradle/
 **/*/nbactions.xml
 nbactions.xml
-jars/
