@@ -35,6 +35,9 @@ public class Main {
 
         log.info("##### phrase: {} ", pythonResult.getPhrase());
         log.info("####################################################################################");
+
+        final long startTime = System.nanoTime();
+
         final Score score = Score.builder()
             .triples(triples)
             .helper(helper)
@@ -74,10 +77,14 @@ public class Main {
         Collections.sort(answers);
         answers = answers.stream().limit(config.getResultSize()).collect(toList());
 
+        final long endTime = System.nanoTime();
+
+
         JsonUtil.save(config.getSaveFile(),
                 resultBuilder
                 .answers(answers)
                 .helper(helper)
+                .nanoSeconds(endTime-startTime)
                 .build()
         );
     }
