@@ -67,7 +67,7 @@ public class Configuration {
         }
 
         if(args.length > 5){
-            config.slm1OnlyL1(args[4].equals("true"));
+            config.slm1OnlyL1(args[5].equals("true"));
         }
 
         return config.build();

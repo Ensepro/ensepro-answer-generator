@@ -61,7 +61,8 @@ public class Main {
             final List<Answer> answersGenerated = answerGenerator.generate(i + 1, triples);
             Collections.sort(answersGenerated);
 
-            if (config.getSlm1OnlyL1() && i > 0) {
+            if (!config.getSlm1OnlyL1() || i == 0) {
+                log.info("HERE");
                 triples =
                         answersGenerated.stream()
                                 .limit(config.getSlm1Factor())
