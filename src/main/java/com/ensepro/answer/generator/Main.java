@@ -9,6 +9,7 @@ import com.ensepro.answer.generator.data.PythonResult;
 import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.mapper.TripleMapper;
 import com.ensepro.answer.generator.utils.JsonUtil;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,6 +22,10 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        if(args.length > 0 && args[0].equals("version")){
+          System.out.println("base");
+          System.exit(0);
+        }
         Configuration config = Configuration.fromArgs(args);
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
