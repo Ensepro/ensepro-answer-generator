@@ -25,6 +25,10 @@ public class Main {
 
     public static void main(String[] args)
             throws IOException, ExecutionException, InterruptedException {
+        if(args.length > 0 && args[0].equals("version")){
+            System.out.println("slm1");
+            System.exit(0);
+        }
         Configuration config = Configuration.fromArgs(args);
         log.info(
                 "####################################################################################");
