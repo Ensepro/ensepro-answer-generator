@@ -9,7 +9,6 @@ import com.ensepro.answer.generator.data.PythonResult;
 import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.mapper.TripleMapper;
 import com.ensepro.answer.generator.utils.JsonUtil;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
