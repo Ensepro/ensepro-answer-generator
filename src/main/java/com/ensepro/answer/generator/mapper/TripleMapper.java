@@ -1,9 +1,9 @@
 package com.ensepro.answer.generator.mapper;
 
+import com.ensepro.answer.generator.data.Triple;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.ensepro.answer.generator.data.Triple;
 
 public class TripleMapper {
 

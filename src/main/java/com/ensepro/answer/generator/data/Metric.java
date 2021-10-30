@@ -3,7 +3,6 @@ package com.ensepro.answer.generator.data;
 import com.ensepro.answer.generator.domain.MetricPolicy;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,21 +1,20 @@
 package com.ensepro.answer.generator.validator;
 
 
+import com.ensepro.answer.generator.domain.GrammarClass;
+import com.ensepro.answer.generator.domain.Position;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
 import static com.ensepro.answer.generator.domain.GrammarClass.SUB;
 import static com.ensepro.answer.generator.domain.GrammarClass.VERB;
 import static com.ensepro.answer.generator.domain.Position.OBJECT;
 import static com.ensepro.answer.generator.domain.Position.PREDICATE;
 import static com.ensepro.answer.generator.domain.Position.SUBJECT;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.ensepro.answer.generator.domain.GrammarClass;
-import com.ensepro.answer.generator.domain.Position;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 
 public class PositionValidator {
 

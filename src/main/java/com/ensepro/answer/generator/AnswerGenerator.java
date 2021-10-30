@@ -1,21 +1,20 @@
 package com.ensepro.answer.generator;
 
-import static java.util.Arrays.asList;
+import com.ensepro.answer.generator.configuration.Configuration;
+import com.ensepro.answer.generator.data.Answer;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Triple;
+import com.ensepro.answer.generator.mapper.AnswerMapper;
+import com.ensepro.answer.generator.validator.AnswerL2Validator;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
-import com.ensepro.answer.generator.configuration.Configuration;
-import com.ensepro.answer.generator.data.Answer;
-import com.ensepro.answer.generator.data.Helper;
-import com.ensepro.answer.generator.mapper.AnswerMapper;
-import com.ensepro.answer.generator.data.Triple;
-import com.ensepro.answer.generator.validator.AnswerL2Validator;
-
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Arrays.asList;
 
 @Slf4j
 @Builder

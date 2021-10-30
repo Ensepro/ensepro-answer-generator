@@ -1,15 +1,5 @@
 package com.ensepro.answer.generator.mapper;
 
-import static com.ensepro.answer.generator.domain.GrammarClass.ADJ;
-import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
-import static java.util.Collections.singletonList;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.ensepro.answer.generator.data.Answer;
 import com.ensepro.answer.generator.data.Helper;
 import com.ensepro.answer.generator.data.Keyword;
@@ -19,8 +9,15 @@ import com.ensepro.answer.generator.data.ScoreDetail;
 import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.data.TripleDetail;
 import com.ensepro.answer.generator.domain.GrammarClass;
-
 import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonList;
 
 @AllArgsConstructor
 public class AnswerMapper {

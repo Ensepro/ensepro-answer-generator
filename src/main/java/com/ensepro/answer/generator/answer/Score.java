@@ -1,16 +1,6 @@
 package com.ensepro.answer.generator.answer;
 
 
-import static com.ensepro.answer.generator.domain.GrammarClass.PROP;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.ensepro.answer.generator.configuration.Configuration;
 import com.ensepro.answer.generator.data.Helper;
 import com.ensepro.answer.generator.data.Keyword;
@@ -22,9 +12,16 @@ import com.ensepro.answer.generator.data.TripleDetail;
 import com.ensepro.answer.generator.domain.GrammarClass;
 import com.ensepro.answer.generator.domain.Position;
 import com.ensepro.answer.generator.validator.PositionValidator;
-
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Score {

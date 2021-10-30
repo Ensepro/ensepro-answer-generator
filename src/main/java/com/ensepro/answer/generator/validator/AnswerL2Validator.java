@@ -1,8 +1,8 @@
 package com.ensepro.answer.generator.validator;
 
-import java.util.List;
-
 import com.ensepro.answer.generator.data.Triple;
+
+import java.util.List;
 
 public class AnswerL2Validator {
 
