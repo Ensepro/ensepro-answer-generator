@@ -1,11 +1,10 @@
 package com.ensepro.answer.generator.data;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 @Builder

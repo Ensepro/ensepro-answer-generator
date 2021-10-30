@@ -1,6 +1,15 @@
 package com.ensepro.answer.generator;
 
-import static java.util.Arrays.asList;
+import com.ensepro.answer.generator.configuration.Configuration;
+import com.ensepro.answer.generator.data.Answer;
+import com.ensepro.answer.generator.data.Helper;
+import com.ensepro.answer.generator.data.Triple;
+import com.ensepro.answer.generator.mapper.AnswerMapper;
+import com.ensepro.answer.generator.validator.AnswerL2Validator;
+import com.ensepro.answer.generator.validator.AnswerL3Validator;
+import lombok.Builder;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,18 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.ensepro.answer.generator.configuration.Configuration;
-import com.ensepro.answer.generator.data.Answer;
-import com.ensepro.answer.generator.data.Helper;
-import com.ensepro.answer.generator.mapper.AnswerMapper;
-import com.ensepro.answer.generator.data.Triple;
-import com.ensepro.answer.generator.validator.AnswerL2Validator;
-import com.ensepro.answer.generator.validator.AnswerL3Validator;
-import com.oracle.jrockit.jfr.Producer;
-
-import lombok.Builder;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Arrays.asList;
 
 @Slf4j
 @Builder

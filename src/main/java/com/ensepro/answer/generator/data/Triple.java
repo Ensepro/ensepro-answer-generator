@@ -1,13 +1,12 @@
 package com.ensepro.answer.generator.data;
 
-import static java.util.stream.Collectors.joining;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import lombok.Builder;
-import lombok.Data;
+import static java.util.stream.Collectors.joining;
 
 @Data
 @Builder

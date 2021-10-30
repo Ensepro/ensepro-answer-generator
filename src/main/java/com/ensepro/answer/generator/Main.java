@@ -1,13 +1,5 @@
 package com.ensepro.answer.generator;
 
-import static java.util.stream.Collectors.toList;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import com.ensepro.answer.generator.answer.Score;
 import com.ensepro.answer.generator.configuration.Configuration;
 import com.ensepro.answer.generator.data.Answer;
@@ -17,8 +9,15 @@ import com.ensepro.answer.generator.data.PythonResult;
 import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.mapper.TripleMapper;
 import com.ensepro.answer.generator.utils.JsonUtil;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class Main {
