@@ -59,10 +59,14 @@ public class Main {
         JavaResult.JavaResultBuilder resultBuilder = JavaResult.builder();
         List<Answer> answers = new ArrayList<>();
         for (int i = 0; i < config.getLevel(); i++) {
-            log.info("### Generating answer for L" + (i + 1));
+          log.info("### Generating answer for L" + (i + 1) + " - l_size={}", triples.size());
+            resultBuilder.l_size(triples.size());
+
 
             final List<Answer> answersGenerated = answerGenerator.generate(i + 1, triples);
             Collections.sort(answersGenerated);
+            answers.addAll(answersGenerated);
+            resultBuilder.answer_size(answersGenerated.size());
 
             if (!config.getSlm1OnlyL1() || i == 0) {
                 log.info("HERE");
@@ -74,11 +78,8 @@ public class Main {
                                 .distinct()
                                 .collect(toList());
             }
-            resultBuilder.l_size(answersGenerated.size());
-            answers.addAll(answersGenerated);
-
-            log.info(
-                    "### Generating answer for L" + (i + 1) + " - DONE - size={}", answersGenerated.size());
+          log.info(
+                  "### Generating answer for L" + (i + 1) + " - DONE - a_size={}, l_size={}", answersGenerated.size(), triples.size());
         }
 
         Collections.sort(answers);

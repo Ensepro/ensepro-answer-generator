@@ -17,6 +17,8 @@ public class JavaResult {
     private final List<Answer> answers;
     @Singular
     private final List<Integer> l_sizes;
+    @Singular
+    private final List<Integer> answer_sizes;
     private final long nanoSeconds;
 
 }
