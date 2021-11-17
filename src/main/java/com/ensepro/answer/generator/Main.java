@@ -58,7 +58,8 @@ public class Main {
         log.info("### Generating answer for L1");
         final List<Answer> answersL1 = answerGenerator.generateL1();
         log.info("### Generating answer for L1 - DONE - size={}", answersL1.size());
-        resultBuilder.l_size(answersL1.size());
+        resultBuilder.l_size(triples.size());
+        resultBuilder.answer_size(answersL1.size());
 
         List<Answer> answers = answersL1;
         if (config.getLevel() > 1) {
@@ -66,7 +67,8 @@ public class Main {
             final List<Answer> answersL2 = answerGenerator.generateL2();
             log.info("### Generating answer for L2 - DONE - size={}", answersL2.size());
             answers.addAll(answersL2);
-            resultBuilder.l_size(answersL2.size());
+            resultBuilder.l_size(triples.size());
+            resultBuilder.answer_size(answersL2.size());
         }
 
         log.info("### Sorting answers");
