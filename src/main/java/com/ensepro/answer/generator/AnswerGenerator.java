@@ -42,9 +42,7 @@ public class AnswerGenerator {
         return map;
     };
 
-
     public List<Answer> generate(final int level, final List<Triple> triples) {
-
         final Function<List<Triple>, List<Answer>> generator = generators.get().get(level);
         return generator.apply(triples);
     }
@@ -53,17 +51,6 @@ public class AnswerGenerator {
     @SneakyThrows
     public List<Answer> generateL1(final List<Triple> triples) {
         this.triples = triples;
-        final AnswerMapper mapper = new AnswerMapper(helper);
-
-        final ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
-
-        return threadPool.submit(() -> triples.parallelStream()
-            .map(mapper::fromTriple)
-            .collect(Collectors.toList()))
-            .get();
-    }
-
-    public List<Answer> generateL1() throws ExecutionException, InterruptedException {
         final AnswerMapper mapper = new AnswerMapper(helper);
 
         final ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
@@ -84,37 +71,6 @@ public class AnswerGenerator {
 
         return threadPool.submit(() -> triples.parallelStream()
             .map(this::createPairWithOtherForL2)
-            .flatMap(List::stream)
-            .filter(validator::validate)
-            .map(mapper::fromTriples)
-            .collect(Collectors.toList()))
-            .get();
-    }
-
-    public List<Answer> generateL2() throws ExecutionException, InterruptedException {
-        final AnswerMapper mapper = new AnswerMapper(helper);
-        final AnswerL2Validator validator = new AnswerL2Validator();
-
-        ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
-
-        return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createPairWithOtherForL2)
-            .flatMap(List::stream)
-            .filter(validator::validate)
-            .map(mapper::fromTriples)
-            .collect(Collectors.toList())).get();
-    }
-
-
-    public List<Answer> generateL3() throws ExecutionException, InterruptedException {
-        this.triples = triples;
-        final AnswerMapper mapper = new AnswerMapper(helper);
-        final AnswerL3Validator validator = new AnswerL3Validator();
-
-        ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
-
-        return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createTriplesForL3)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
@@ -212,14 +168,14 @@ public class AnswerGenerator {
 
     private List<List<Triple>> createTriplesForL5(final Triple triple1) {
         return triples.stream()
-                .map(triple2 -> createTriplesForL4Part2(triple1, triple2))
+                .map(triple2 -> createTriplesForL5Part2(triple1, triple2))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     private List<List<Triple>> createTriplesForL5Part2(final Triple triple1, final Triple triple2) {
         return triples.stream()
-                .map(triple3 -> createTriplesForL4Part3(triple1, triple2, triple3))
+                .map(triple3 -> createTriplesForL5Part3(triple1, triple2, triple3))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
