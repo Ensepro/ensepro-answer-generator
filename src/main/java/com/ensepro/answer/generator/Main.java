@@ -62,14 +62,17 @@ public class Main {
           log.info("### Generating answer for L" + (i + 1) + " - l_size={}", triples.size());
             resultBuilder.l_size(triples.size());
 
-
+//            log.info("right before generating");
             final List<Answer> answersGenerated = answerGenerator.generate(i + 1, triples);
+//            log.info("right after generating");
+//            log.info("right before sorting");
             Collections.sort(answersGenerated);
+//            log.info("right after sorting");
             answers.addAll(answersGenerated);
             resultBuilder.answer_size(answersGenerated.size());
 
             if (!config.getSlm1OnlyL1() || i == 0) {
-                log.info("HERE");
+                log.info("applying 'fator sl1m'");
                 triples =
                         answersGenerated.stream()
                                 .limit(config.getSlm1Factor())

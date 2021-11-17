@@ -7,6 +7,8 @@ import com.ensepro.answer.generator.data.Triple;
 import com.ensepro.answer.generator.mapper.AnswerMapper;
 import com.ensepro.answer.generator.validator.AnswerL2Validator;
 import com.ensepro.answer.generator.validator.AnswerL3Validator;
+import com.ensepro.answer.generator.validator.AnswerL4Validator;
+import com.ensepro.answer.generator.validator.AnswerL5Validator;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ public class AnswerGenerator {
         map.put(1, this::generateL1);
         map.put(2, this::generateL2);
         map.put(3, this::generateL3);
+        map.put(4, this::generateL4);
+        map.put(5, this::generateL5);
         return map;
     };
 
@@ -79,7 +83,7 @@ public class AnswerGenerator {
         ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
 
         return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createPairWithOther)
+            .map(this::createPairWithOtherForL2)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
@@ -94,7 +98,7 @@ public class AnswerGenerator {
         ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
 
         return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createPairWithOther)
+            .map(this::createPairWithOtherForL2)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
@@ -110,7 +114,7 @@ public class AnswerGenerator {
         ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
 
         return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createTriplesWithOtherL1)
+            .map(this::createTriplesForL3)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
@@ -126,7 +130,7 @@ public class AnswerGenerator {
         ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
 
         return threadPool.submit(() -> triples.parallelStream()
-            .map(this::createTriplesWithOtherL1)
+            .map(this::createTriplesForL3)
             .flatMap(List::stream)
             .filter(validator::validate)
             .map(mapper::fromTriples)
@@ -134,22 +138,102 @@ public class AnswerGenerator {
             .get();
     }
 
-    private List<List<Triple>> createPairWithOther(final Triple triple1) {
+    @SneakyThrows
+    public List<Answer> generateL4(final List<Triple> triples) {
+        final AnswerMapper mapper = new AnswerMapper(helper);
+        final AnswerL4Validator validator = new AnswerL4Validator();
+
+        ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
+
+        return threadPool.submit(() -> triples.parallelStream()
+                .map(this::createTriplesForL4)
+                .flatMap(List::stream)
+                .filter(validator::validate)
+                .map(mapper::fromTriples)
+                .collect(Collectors.toList()))
+                .get();
+    }
+
+    @SneakyThrows
+    public List<Answer> generateL5(final List<Triple> triples) {
+        final AnswerMapper mapper = new AnswerMapper(helper);
+        final AnswerL5Validator validator = new AnswerL5Validator();
+
+        ForkJoinPool threadPool = new ForkJoinPool(config.getThreads());
+
+        return threadPool.submit(() -> triples.parallelStream()
+                .map(this::createTriplesForL5)
+                .flatMap(List::stream)
+                .filter(validator::validate)
+                .map(mapper::fromTriples)
+                .collect(Collectors.toList()))
+                .get();
+    }
+
+
+    private List<List<Triple>> createPairWithOtherForL2(final Triple triple1) {
         return triples.stream()
             .map(triple2 -> asList(triple1, triple2))
             .collect(Collectors.toList());
     }
 
-    private List<List<Triple>> createTriplesWithOtherL1(final Triple triple1) {
+    private List<List<Triple>> createTriplesForL3(final Triple triple1) {
         return triples.stream()
-            .map(triple2 -> createTriplesWithOtherL2(triple1, triple2))
+            .map(triple2 -> createTriplesForL3Part2(triple1, triple2))
             .flatMap(List::stream)
             .collect(Collectors.toList());
     }
 
-    private List<List<Triple>> createTriplesWithOtherL2(final Triple triple1, final Triple triple2) {
+    private List<List<Triple>> createTriplesForL3Part2(final Triple triple1, final Triple triple2) {
         return triples.stream()
             .map(triple3 -> asList(triple1, triple2, triple3))
             .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL4(final Triple triple1) {
+        return triples.stream()
+                .map(triple2 -> createTriplesForL4Part2(triple1, triple2))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL4Part2(final Triple triple1, final Triple triple2) {
+        return triples.stream()
+                .map(triple3 -> createTriplesForL4Part3(triple1, triple2, triple3))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL4Part3(final Triple triple1, final Triple triple2, final Triple triple3) {
+        return triples.stream()
+                .map(triple4 -> asList(triple1, triple2, triple3, triple4))
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL5(final Triple triple1) {
+        return triples.stream()
+                .map(triple2 -> createTriplesForL4Part2(triple1, triple2))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL5Part2(final Triple triple1, final Triple triple2) {
+        return triples.stream()
+                .map(triple3 -> createTriplesForL4Part3(triple1, triple2, triple3))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL5Part3(final Triple triple1, final Triple triple2, final Triple triple3) {
+        return triples.stream()
+                .map(triple4 -> createTriplesForL5Part4(triple1, triple2, triple3, triple4))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<List<Triple>> createTriplesForL5Part4(final Triple triple1, final Triple triple2, final Triple triple3, final Triple triple4) {
+        return triples.stream()
+                .map(triple5 -> asList(triple1, triple2, triple3, triple4, triple5))
+                .collect(Collectors.toList());
     }
 }
