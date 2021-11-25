@@ -60,7 +60,7 @@ public class Main {
 
     private static boolean generate(String[] args, Configuration config) throws IOException {
         if (args.length > 0 && args[0].equals("version")) {
-            System.out.println("slm1");
+            System.out.println("slm1-all2");
             System.exit(0);
         }
 
@@ -92,7 +92,7 @@ public class Main {
                             .build();
             JavaResult.JavaResultBuilder resultBuilder = JavaResult.builder();
             List<Answer> answers = new ArrayList<>();
-            for (int i = 0; i < config.getLevel(); i++) {
+            for (int i = 0; i < 2; i++) {
                 log.info("### Generating answer for L" + (i + 1) + " - l_size={}", triples.size());
                 resultBuilder.l_size(triples.size());
                 final List<Answer> answersGenerated = answerGenerator.generate(i + 1, triples);
