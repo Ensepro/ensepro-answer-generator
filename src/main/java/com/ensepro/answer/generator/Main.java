@@ -12,12 +12,18 @@ import com.ensepro.answer.generator.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static java.util.stream.Collectors.toList;
 
@@ -26,11 +32,38 @@ public class Main {
 
     public static void main(String[] args)
             throws IOException, ExecutionException, InterruptedException {
+
+        Configuration config = Configuration.fromArgs(args);
+        final Duration timeout = Duration.ofSeconds(120);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        final Future<Boolean> handler = executor.submit(() -> generate(args, config));
+
+        try {
+            handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            handler.cancel(true);
+            final Map<String, Object> stats = new HashMap<>();
+            stats.put("outOutMemory", false);
+            stats.put("exception", "Timeout");
+            stats.put("detail", "Timeout");
+            JsonUtil.save(
+                    config.getSaveFile(),
+                    JavaResult.builder()
+                            .answers(Collections.emptyList())
+                            .stats(stats)
+                            .build()
+            );
+        }
+        executor.shutdownNow();
+    }
+
+    private static boolean generate(String[] args, Configuration config) throws IOException {
         if (args.length > 0 && args[0].equals("version")) {
             System.out.println("slm1");
             System.exit(0);
         }
-        Configuration config = Configuration.fromArgs(args);
+
         log.info("####################################################################################");
         log.info("#### STARTING PROCESS: {}", config);
 
@@ -111,19 +144,8 @@ public class Main {
             );
         } catch (Exception ex) {
             log.info("GENERIC ERROR");
-            final Map<String, Object> stats = new HashMap<>();
-            stats.put("outOutMemory", false);
-            stats.put("exception", ex.getCause().getClass());
-            stats.put("detail", ex.getMessage());
-            JavaResult.JavaResultBuilder resultBuilder = JavaResult.builder();
-            JsonUtil.save(
-                    config.getSaveFile(),
-                    resultBuilder
-                            .answers(Collections.emptyList())
-//                            .helper(helper)
-                            .stats(stats)
-                            .build()
-            );
         }
+        return true;
     }
+
 }
